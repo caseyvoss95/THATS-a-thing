@@ -34,6 +34,7 @@
 //GLOBAL VARIABLES
 
 let score = 0;
+let questionNum = 5;
 
 //DOM ELEMENTS
 
@@ -48,11 +49,9 @@ const $score = $('#score');
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: renders a question in the game
 //input: takes no input
-//output: true if player's guess is successful and false if it is unsuccessful
+//output: true if word is real, false if word is fake
 ////////////////////////////////////////////////////////////////////////////////////
 function render() {
-
-    $score.text(score, score); //display score of 0
 
     //decide if word will be real or fake (50/50)
     const isReal = Math.round(Math.random());
@@ -70,33 +69,11 @@ function render() {
         }
     }
 
-    //display rendered word and definition
+    //render word and definition to user
     $word.text(word.word);
     $definition.text(word.definition);
 
-    //listen for user choice
-    $yes.on('click', function () {        
-        if (isReal){
-            scoreAdd(10);
-        }
-    })
-
-    $no.on('click', function () {
-        if (!isReal){
-            scoreAdd(10);
-        }
-    })
-
-
-    /////enclose in a score function
-    //if successful +10 points!
-    //if unsuccessful +0 points :(
-    /////enclose in a score function
-
-    //if number of questions is still > total, back to beginning
-    //else, display final score 
-    //MVP game is finished
-
+    return isReal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -160,8 +137,38 @@ function scoreAdd(num) {
 
 function main() {
 
-    render();
+    $score.text(score, score); //display score of 0
 
+
+    //TODO add iterate through all questions
+    isReal = render();
+
+    //listen for user choice
+    $yes.on('click', function () {
+        if (isReal) {
+            scoreAdd(10);
+        }
+        else {
+            console.log("WRONG");
+        }
+    })
+
+    $no.on('click', function () {
+        if (!isReal) {
+            scoreAdd(10);
+        }
+        else {
+            console.log("WRONG");
+        }
+    })
+
+    console.log("onto the next question");
+
+
+
+
+    //display final score 
+    //MVP game is finished
 }
 
 main();
