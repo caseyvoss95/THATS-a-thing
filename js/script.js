@@ -43,6 +43,7 @@ const $definition = $('#definition');
 const $yes = $('#yes');
 const $no = $('#no');
 const $score = $('#score');
+const $questionsNum = $('#questionsNum');
 
 //FUNCTIONS
 
@@ -133,42 +134,80 @@ function scoreAdd(num) {
     $score.text(score);
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+//purpose: subtracts and displays one question from the count
+//input: none
+//output: none
+////////////////////////////////////////////////////////////////////////////////////
+function removeQuestion() {
+    questionNum -= 1;
+    $questionsNum.text(questionNum);
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//purpose: checks if number of remaining questions is 0
+//input: none
+//output: true if game is over, false if game is not over
+////////////////////////////////////////////////////////////////////////////////////
+function gameOver() {
+    console.log("checking if game is over");
+    
+    if (questionNum === 0) {
+        console.log("GAME OVER");
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
 function main() {
 
-    $score.text(score, score); //display score of 0
+    $score.text(score); //display score of 0
+    $questionsNum.text(questionNum);
 
     let isReal = render();
 
     //listen for user choice
     $yes.on('click', function () {
-        
+
         if (isReal) {
             scoreAdd(10);
-            isReal = render();
+            removeQuestion();
+            if (!gameOver()) {
+                isReal = render();
+            }
         }
         else {
             console.log("WRONG");
-            isReal = render();
+            removeQuestion();
+            if (!gameOver()) {
+                isReal = render();
+            }
         }
     })
 
     $no.on('click', function () {
         if (!isReal) {
             scoreAdd(10);
-            isReal = render();
+            removeQuestion();
+            if (!gameOver()) {
+                isReal = render();
+            }
         }
         else {
             console.log("WRONG");
-            isReal = render();
+            removeQuestion();
+            if (!gameOver()) {
+                isReal = render();
+            }
         }
     })
 
-    //TODO  iterate through multiple questions
-
-
-    //display final score 
-    //MVP game is finished
+    //display final score TODO: add visual indication
+    if (!gameOver){
+        console.log("Final score is " + score);
+    }
 }
 
 main();
