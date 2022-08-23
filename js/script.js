@@ -55,14 +55,15 @@ const $questionsNum = $('#questionsNum');
 function render() {
 
     //decide if word will be real or fake (50/50)
-    const isReal = Math.round(Math.random());
+    //const isReal = Math.round(Math.random());
+    const isReal = true; //DEBUG ONLY
 
     if (isReal) { //real word chosen
         word = findRealWord();
     }
     else { //randomly choose between 2 procedures for fake word (50/50):
-        const fakeA = Math.round(Math.random());
-        if (fakeA) {
+        const fake = Math.round(Math.random());
+        if (fake) {
             word = findFakeWordA();
         }
         else {
@@ -70,22 +71,23 @@ function render() {
         }
     }
 
-    //render word and definition to user
-    $word.text(word.word);
-    $definition.text(word.definition);
+    // //render word and definition to user DEBUG ONLY
+    // $word.text(word.word);
+    // $definition.text(word.definition);
 
-    return isReal;
+    // return isReal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: collect a random genuine word and definition
 //input: takes no input
-//output: returns a object with one string key-value pair - {word: realWord, definition: realDefinition}
+//output: returns an object with one string key-value pair - {word: realWord, definition: realDefinition}
 ////////////////////////////////////////////////////////////////////////////////////
 function findRealWord() {
-    return { word: 'a-real-word', definition: 'a real word definition here' };
-
+    
     //API call for a random word
+    let wordObject = getRandomWord();
+    console.log(wordObject);
 
     //API call this word to check if word is uncommon 
     //if common, back to beginning of function
@@ -97,7 +99,7 @@ function findRealWord() {
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: fabricate a convincing fake word from two real words
 //input: takes no input
-//output: returns a object with one string key-value pair - {word: fakeWord, definition: fakeDefinition}
+//output: returns an object with one string key-value pair - {word: fakeWord, definition: fakeDefinition}
 ////////////////////////////////////////////////////////////////////////////////////
 function findFakeWordA() {
     return { word: 'fake-concatenated-word', definition: 'and some BS nonsense about what it means' }
@@ -125,6 +127,33 @@ function findFakeWordB() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
+//purpose: retrieve a random word and definition from Words API
+//input: none
+//output: returns an object in this fashion - {word: wordActual, definition: definitionActual}
+////////////////////////////////////////////////////////////////////////////////////
+function getRandomWord() {
+
+    //random word API call
+    const settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://wordsapiv1.p.rapidapi.com/words/?random=true",
+        "method": "GET",
+        "headers": {
+            "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+            "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+        }
+    };
+
+    $.ajax(settings).done(function (wordActual) {
+        console.log(wordActual);
+        return { word: wordActual.word, definition: wordActual.definition }
+    });
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////
 //purpose: add points to score
 //input: takes number of points to add
 //output: none
@@ -150,12 +179,12 @@ function removeQuestion() {
 //output: true if game is over, false if game is not over
 ////////////////////////////////////////////////////////////////////////////////////
 function gameOver() {
-    
+
     if (questionNum === 0) {
         //notify user that game is over
         console.log("GAME OVER"); //TODO display as message in document
         console.log("Final score is " + score);
-        
+
         //reset counters
         score = 0;
         questionNum = 5;
