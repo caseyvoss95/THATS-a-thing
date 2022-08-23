@@ -116,7 +116,7 @@ function findFakeWordA() {
 function findFakeWordB() {
     return { word: 'fake-letter-swap-word', definition: 'and some BS nonsense about what it means' }
 
-    //API call for one random word that fit criteria (fine tuning and play testing needed)
+    //API call for one random word that fits criteria (fine tuning and play testing needed)
     //swap vowels and consonants in a convincing way (requires some planning)
     //find another random words definition, attach this to the the word object
     //return a string object in the format {word: definition}
@@ -131,7 +131,6 @@ function findFakeWordB() {
 function scoreAdd(num) {
     score += num;
     $score.text(score);
-    return num;
 }
 
 
@@ -139,32 +138,33 @@ function main() {
 
     $score.text(score, score); //display score of 0
 
-
-    //TODO add iterate through all questions
-    isReal = render();
+    let isReal = render();
 
     //listen for user choice
     $yes.on('click', function () {
+        
         if (isReal) {
             scoreAdd(10);
+            isReal = render();
         }
         else {
             console.log("WRONG");
+            isReal = render();
         }
     })
 
     $no.on('click', function () {
         if (!isReal) {
             scoreAdd(10);
+            isReal = render();
         }
         else {
             console.log("WRONG");
+            isReal = render();
         }
     })
 
-    console.log("onto the next question");
-
-
+    //TODO  iterate through multiple questions
 
 
     //display final score 
