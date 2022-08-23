@@ -145,15 +145,22 @@ function removeQuestion() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-//purpose: checks if number of remaining questions is 0
+//purpose: checks if games is over, resets score and questionNum if true
 //input: none
 //output: true if game is over, false if game is not over
 ////////////////////////////////////////////////////////////////////////////////////
 function gameOver() {
-    console.log("checking if game is over");
     
     if (questionNum === 0) {
-        console.log("GAME OVER");
+        //notify user that game is over
+        console.log("GAME OVER"); //TODO display as message in document
+        console.log("Final score is " + score);
+        
+        //reset counters
+        score = 0;
+        questionNum = 5;
+        $score.text(score);
+        $questionsNum.text(questionNum);
         return true;
     }
     else {
@@ -168,7 +175,7 @@ function main() {
 
     let isReal = render();
 
-    //listen for user choice
+    //listen for user choices
     $yes.on('click', function () {
 
         if (isReal) {
@@ -176,6 +183,9 @@ function main() {
             removeQuestion();
             if (!gameOver()) {
                 isReal = render();
+            }
+            else {
+
             }
         }
         else {
@@ -203,11 +213,6 @@ function main() {
             }
         }
     })
-
-    //display final score TODO: add visual indication
-    if (!gameOver){
-        console.log("Final score is " + score);
-    }
 }
 
 main();
