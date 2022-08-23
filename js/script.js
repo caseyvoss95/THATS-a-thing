@@ -31,7 +31,14 @@
 // 	console.log(response);
 // });
 
-//function declarations
+//DOM ELEMENTS
+const $word = $('#word');
+const $definition = $('#definition');
+const $yes = $('#yes');
+const $no = $('#no');
+
+
+//FUNCTIONS
 
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: renders a question in the game
@@ -41,7 +48,7 @@
 function render(){
 
 //decide if word will be real or fake (50/50)
-let word = "a";
+let word = {word: "", definition: ""};
 const isReal = Math.round(Math.random());
 
 if (isReal){ //real word chosen
@@ -57,7 +64,11 @@ else { //randomly choose between 2 procedures for fake word (50/50):
     }
 }
 
+console.log(word);
+
 //display rendered word and definition
+$word.text(word.word);
+$definition.text(word.definition);
 
 //listen for user choice
 
@@ -75,11 +86,13 @@ else { //randomly choose between 2 procedures for fake word (50/50):
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: collect a random genuine word and definition
 //input: takes no input
-//output: returns a object with one string key-value pair - {word: definition}
+//output: returns a object with one string key-value pair - {word: realWord, definition: realDefinition}
 ////////////////////////////////////////////////////////////////////////////////////
 function findRealWord(){
 
-    console.log("Finding real words");
+    console.log("Finding a real word");
+    return {word: 'a real word', definition: 'a real word definition here'};
+
 //API call for a random word
 
 //API call this word to check if word is uncommon 
@@ -92,10 +105,11 @@ function findRealWord(){
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: fabricate a convincing fake word from two real words
 //input: takes no input
-//output: returns a object with one string key-value pair - {word: definition}
+//output: returns a object with one string key-value pair - {word: fakeWord, definition: fakeDefinition}
 ////////////////////////////////////////////////////////////////////////////////////
 function findFakeWordA(){
     console.log("Finding fake words A");
+    return {word: 'fake-concatenated word', definition: 'and some BS nonsense about what it means'}
 
 //API call for two random words that fit criteria (fine tuning and play testing needed)
 //trim and concantenate them in a way that is feasible (maybe look up "how to make fake words")
@@ -107,13 +121,15 @@ function findFakeWordA(){
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: fabricate a convincing fake word by swapping vowels and consonants
 //input: takes no input
-//output: returns a object with one string key-value pair - {word: definition}
+//output: returns a object with one string key-value pair - {word: fakeWord, definition: fakeDefinition}
 ////////////////////////////////////////////////////////////////////////////////////
 function findFakeWordB(){
     console.log("Finding fake words B");
+    return {word: 'fake-letter-swap-word', definition: 'and some BS nonsense about what it means'}
 
 //API call for one random word that fit criteria (fine tuning and play testing needed)
 //swap vowels and consonants in a convincing way (requires some planning)
+//find another random words definition, attach this to the the word object
 //return a string object in the format {word: definition}
 
 }
