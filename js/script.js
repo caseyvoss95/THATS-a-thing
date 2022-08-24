@@ -175,41 +175,29 @@ function findFakeWordA() {
                     console.log(wordActualA);
                     console.log(wordActualB);
 
-                    let wordActualAA = 'Compound Word';
-                    let wordActualBB = 'Oneword';
-                    aIsCompound = false;
-                    bIsCompound = false;
                     let aPiece;
                     let bPiece;
-
-                    //console.log(WordActualAA);
                     
-                    //checking A for compound word
+                    //checking A for compound word, slice if true
                     if (wordActualA.word.search(' ') != -1){
                         aPiece = wordActualA.word.substr(0, wordActualA.word.search(' '));
-                        aIsCompound = true;
                     }
                     if (wordActualA.word.search('-') != -1){
                         aPiece = wordActualA.word.substr(0, wordActualA.word.search('-'));
-                        aIsCompound = true;
                     }
 
                     console.log(aPiece);
 
-                    //checking B for compound word
+                    //checking B for compound word, slice if true
                     if (wordActualB.word.search(' ') != -1){
                         bPiece = wordActualB.word.substr(0, wordActualB.word.search(' '));
-                        bIsCompound = true;
                     }
-                    if (wordActualA.word.search('-') != -1){
+                    if (wordActualB.word.search('-') != -1){
                         bPiece = wordActualB.word.substr(0, wordActualB.word.search('-'));
-                        bIsCompound = true;
                     }
 
                     console.log(bPiece);
 
-                    console.log(aIsCompound);
-                    console.log(bIsCompound);
         
                 });
 
@@ -222,7 +210,6 @@ function findFakeWordA() {
     
     
     
-     //trim and concantenate them in a way that is feasible (maybe look up "how to make fake words")
     //randomly select one word's definition to be the final definition (50/50)
     //return a string object in the format {word: fakeWord, definition: fakeDefinition}
     
