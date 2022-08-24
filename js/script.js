@@ -171,11 +171,28 @@ function findFakeWordA() {
             };
         
                 $.ajax(settings).then((wordActualB) => {
-                    
+                    //DEBUG ONLY
                     console.log(wordActualA);
                     console.log(wordActualB);
+
+                    let wordActualAA = 'Compound';
+                    let wordActualBB = 'Oneword';
+                    aIsCompound = false;
+                    bIsCompound = false;
+                    //console.log(WordActualAA);
+                    
+                    //checking A for compound word
+                    if (wordActualA.word.search(' ') != -1 || wordActualA.word.search('-') != -1 ){
+                        aIsCompound = true;
+                    }
+
+                    //checking B for compound word
+                    if (wordActualB.word.search(' ') != -1 || wordActualB.word.search('-') != -1 ){
+                        bIsCompound = true;
+                    }
         
-        
+                    console.log(aIsCompound);
+                    console.log(bIsCompound);
         
                 });
 
