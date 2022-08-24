@@ -198,11 +198,11 @@ function findFakeWordA() {
 
                     //checking B for compound word
                     if (wordActualB.word.search(' ') != -1){
-                        aPiece = wordActualB.word.substr(0, wordActualB.word.search(' '));
+                        bPiece = wordActualB.word.substr(0, wordActualB.word.search(' '));
                         bIsCompound = true;
                     }
                     if (wordActualA.word.search('-') != -1){
-                        aPiece = wordActualB.word.substr(0, wordActualB.word.search('-'));
+                        bPiece = wordActualB.word.substr(0, wordActualB.word.search('-'));
                         bIsCompound = true;
                     }
 
