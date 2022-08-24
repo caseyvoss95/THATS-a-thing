@@ -193,17 +193,17 @@ function findFakeWordA() {
 
             //checking B for compound word, slice if true
             if (wordActualB.word.search(' ') != -1) {
-                bPiece = wordActualB.word.substr(0, wordActualB.word.search(' '));
+                bPiece = wordActualB.word.substr(wordActualB.word.search(' '), wordActualB.length - 1);
             }
             else if (wordActualB.word.search('-') != -1) {
-                bPiece = wordActualB.word.substr(0, wordActualB.word.search('-'));
+                bPiece = wordActualB.word.substr((wordActualB.word.search('-'), wordActualB.length - 1));
             }
             else{
                 bPiece = wordActualB.word;
             }
             console.log(bPiece);
 
-            if (aPiece || bPiece) { //concantenate if at least one
+            if (aPiece || bPiece) { //concantenate if at least one compound word is present
                 const connector = Math.round(Math.random());
                 console.log(connector);
                 if (connector) {
@@ -218,6 +218,10 @@ function findFakeWordA() {
             }
 
 
+            //randomly select one word's definition to be the final definition (50/50)
+            const whichDefinition = Math.round(Math.random());
+
+
 
         });
 
@@ -230,8 +234,6 @@ function findFakeWordA() {
 
 
 
-    //randomly select one word's definition to be the final definition (50/50)
-    //return a string object in the format {word: fakeWord, definition: fakeDefinition}
 
 
 
