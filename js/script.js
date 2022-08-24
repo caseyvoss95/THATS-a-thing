@@ -434,11 +434,13 @@ $.ajax(settings).done(function (syllablesA) {
         console.log(syllablesA);
         console.log(syllablesB);
 
-        const syllableCount = syllablesA.syllables.count + syllablesB.syllables.count - 1;
+        const syllableTotal = syllablesA.syllables.count + syllablesB.syllables.count - 1;
 
-        console.log(syllablesA.syllables.count);
-        console.log(syllablesB.syllables.count);
-        console.log(syllableCount);
+        console.log(syllableTotal);
+
+        //fake word has between 2 and (n - 1) syllables 
+        const newSyllable = Math.floor(Math.random() * (syllableTotal - 1)) + 2;
+        console.log(newSyllable);
 
     });
 
