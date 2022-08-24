@@ -33,10 +33,6 @@
 
 
 
-
-
-
-
 //GLOBAL VARIABLES
 
 let score = 0;
@@ -65,19 +61,19 @@ function render() {
 
     //decide if word will be real or fake (50/50)
     //const isReal = Math.round(Math.random());
-    isReal = true; //DEBUG ONLY
+    isReal = false; //DEBUG ONLY
 
     if (isReal) { //real word chosen
         findRealWord();
-        console.log(currentWord);
     }
     else { //randomly choose between 2 procedures for fake word (50/50):
-        const fake = Math.round(Math.random());
+        //const fake = Math.round(Math.random());
+        const fake = true; //DEBUG only
         if (fake) {
-            word = findFakeWordA();
+            findFakeWordA();
         }
         else {
-            word = findFakeWordB();
+            findFakeWordB();
         }
     }
 
@@ -142,17 +138,65 @@ function findRealWord() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-//purpose: fabricate a convincing fake word from two real words
+//purpose: combine two random words to create a new fake word
 //input: none
-//output: returns an object with one string key-value pair - {word: fakeWord, definition: fakeDefinition}
+//output: none
 ////////////////////////////////////////////////////////////////////////////////////
 function findFakeWordA() {
-    return { word: 'fake-concatenated-word', definition: 'and some BS nonsense about what it means' }
+        
+     //first random word API call
+    const settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://wordsapiv1.p.rapidapi.com/words/?random=true",
+        "method": "GET",
+        "headers": {
+            "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+            "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+        }
+    };
 
-    //API calls for two random words that fit criteria (fine tuning and play testing needed)
-    //trim and concantenate them in a way that is feasible (maybe look up "how to make fake words")
+        $.ajax(settings).then((wordActualA) => {
+            
+             //second random word API call
+            const settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "https://wordsapiv1.p.rapidapi.com/words/?random=true",
+                "method": "GET",
+                "headers": {
+                    "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+                    "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+                }
+            };
+        
+                $.ajax(settings).then((wordActualB) => {
+                    
+                    console.log(wordActualA);
+                    console.log(wordActualB);
+        
+        
+        
+                });
+
+
+
+
+
+        });
+    
+    
+    
+    
+     //trim and concantenate them in a way that is feasible (maybe look up "how to make fake words")
     //randomly select one word's definition to be the final definition (50/50)
     //return a string object in the format {word: fakeWord, definition: fakeDefinition}
+    
+    
+    
+    return { word: 'fake-concatenated-word', definition: 'and some BS nonsense about what it means' }
+
+   
 
 }
 
