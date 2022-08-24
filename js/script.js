@@ -185,7 +185,7 @@ function findFakeWordA() {
             else if (wordActualA.word.search('-') != -1) {
                 aPiece = wordActualA.word.substr(0, wordActualA.word.search('-'));
             }
-            else{
+            else {
                 aPiece = wordActualA.word;
             }
 
@@ -198,11 +198,12 @@ function findFakeWordA() {
             else if (wordActualB.word.search('-') != -1) {
                 bPiece = wordActualB.word.substr((wordActualB.word.search('-'), wordActualB.length - 1));
             }
-            else{
+            else {
                 bPiece = wordActualB.word;
             }
             console.log(bPiece);
 
+            //final product created
             if (aPiece || bPiece) { //concantenate if at least one compound word is present
                 const connector = Math.round(Math.random());
                 console.log(connector);
@@ -216,10 +217,21 @@ function findFakeWordA() {
 
                 }
             }
+            else {
+
+
+                //syllabel calls here
+
+
+
+            }
+
+
+
 
 
             //randomly select one word's definition to be the final definition (50/50)
-            const whichDefinition = Math.round(Math.random());
+
 
 
 
@@ -389,4 +401,41 @@ function main() {
     })
 }
 
-main();
+//main();
+
+//syllables functionality TEST ZONE
+const settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "https://wordsapiv1.p.rapidapi.com/words/random/syllables",
+    "method": "GET",
+    "headers": {
+        "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+        "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+    }
+};
+
+$.ajax(settings).done(function (syllablesA) {
+
+
+    const settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://wordsapiv1.p.rapidapi.com/words/symmetrical/syllables",
+        "method": "GET",
+        "headers": {
+            "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+            "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+        }
+    };
+
+    $.ajax(settings).done(function (syllablesB) {
+
+        console.log(syllablesA);
+        console.log(syllablesB);
+
+
+    });
+
+
+});
