@@ -434,6 +434,11 @@ $.ajax(settings).done(function (syllablesA) {
         console.log(syllablesA);
         console.log(syllablesB);
 
+        const syllableCount = syllablesA.syllables.count + syllablesB.syllables.count - 1;
+
+        console.log(syllablesA.syllables.count);
+        console.log(syllablesB.syllables.count);
+        console.log(syllableCount);
 
     });
 
