@@ -99,41 +99,41 @@ function findRealWord() {
         }
     };
 
-        $.ajax(settings).then((wordActual) => {
-            $word.text(wordActual.word);
-            
-            
-            console.log(wordActual.word);
-            
-            //definition API call
-            const settingsA = {
-                "async": true,
-                "crossDomain": true,
-                "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActual.word}/definitions`,
-                "method": "GET",
-                "headers": {
-                    "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-                    "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-                }
-            };
-            
-            $.ajax(settingsA).then(function (wordDefinition) {
-                
-                //check if API even *has* definition
-                if (wordDefinition.definitions.length === 0){
-                    $definition.text("Definition not found :(");
-                }
-                else {
-                    $definition.text(wordDefinition.definitions[0].definition);
-                }
+    $.ajax(settings).then((wordActual) => {
+        $word.text(wordActual.word);
 
 
-            }, (error) => { 
+        console.log(wordActual.word);
+
+        //definition API call
+        const settingsA = {
+            "async": true,
+            "crossDomain": true,
+            "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActual.word}/definitions`,
+            "method": "GET",
+            "headers": {
+                "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+                "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+            }
+        };
+
+        $.ajax(settingsA).then(function (wordDefinition) {
+
+            //check if API even *has* definition
+            if (wordDefinition.definitions.length === 0) {
                 $definition.text("Definition not found :(");
+            }
+            else {
+                $definition.text(wordDefinition.definitions[0].definition);
+            }
 
-            })
-           
+
+        }, (error) => {
+            $definition.text("Definition not found :(");
+
         })
+
+    })
     return currentWord;
 }
 
@@ -143,8 +143,8 @@ function findRealWord() {
 //output: none
 ////////////////////////////////////////////////////////////////////////////////////
 function findFakeWordA() {
-        
-     //first random word API call
+
+    //first random word API call
     const settings = {
         "async": true,
         "crossDomain": true,
@@ -156,68 +156,88 @@ function findFakeWordA() {
         }
     };
 
-        $.ajax(settings).then((wordActualA) => {
-            
-             //second random word API call
-            const settings = {
-                "async": true,
-                "crossDomain": true,
-                "url": "https://wordsapiv1.p.rapidapi.com/words/?random=true",
-                "method": "GET",
-                "headers": {
-                    "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-                    "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+    $.ajax(settings).then((wordActualA) => {
+
+        //second random word API call
+        const settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": "https://wordsapiv1.p.rapidapi.com/words/?random=true",
+            "method": "GET",
+            "headers": {
+                "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+                "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+            }
+        };
+
+        $.ajax(settings).then((wordActualB) => {
+            //DEBUG ONLY
+            console.log(wordActualA);
+            console.log(wordActualB);
+
+            let aPiece;
+            let bPiece;
+
+            //checking A for compound word, slice if true
+            if (wordActualA.word.search(' ') != -1) {
+                aPiece = wordActualA.word.substr(0, wordActualA.word.search(' '));
+            }
+            else if (wordActualA.word.search('-') != -1) {
+                aPiece = wordActualA.word.substr(0, wordActualA.word.search('-'));
+            }
+            else{
+                aPiece = wordActualA.word;
+            }
+
+            console.log(aPiece);
+
+            //checking B for compound word, slice if true
+            if (wordActualB.word.search(' ') != -1) {
+                bPiece = wordActualB.word.substr(0, wordActualB.word.search(' '));
+            }
+            else if (wordActualB.word.search('-') != -1) {
+                bPiece = wordActualB.word.substr(0, wordActualB.word.search('-'));
+            }
+            else{
+                bPiece = wordActualB.word;
+            }
+            console.log(bPiece);
+
+            if (aPiece || bPiece) { //concantenate if at least one
+                const connector = Math.round(Math.random());
+                console.log(connector);
+                if (connector) {
+                    console.log(aPiece + " " + bPiece);
+                    $word.text(aPiece + " " + bPiece)
                 }
-            };
-        
-                $.ajax(settings).then((wordActualB) => {
-                    //DEBUG ONLY
-                    console.log(wordActualA);
-                    console.log(wordActualB);
+                else if (!connector) {
+                    console.log(aPiece + "-" + bPiece);
+                    $word.text(aPiece + "-" + bPiece)
 
-                    let aPiece;
-                    let bPiece;
-                    
-                    //checking A for compound word, slice if true
-                    if (wordActualA.word.search(' ') != -1){
-                        aPiece = wordActualA.word.substr(0, wordActualA.word.search(' '));
-                    }
-                    if (wordActualA.word.search('-') != -1){
-                        aPiece = wordActualA.word.substr(0, wordActualA.word.search('-'));
-                    }
-
-                    console.log(aPiece);
-
-                    //checking B for compound word, slice if true
-                    if (wordActualB.word.search(' ') != -1){
-                        bPiece = wordActualB.word.substr(0, wordActualB.word.search(' '));
-                    }
-                    if (wordActualB.word.search('-') != -1){
-                        bPiece = wordActualB.word.substr(0, wordActualB.word.search('-'));
-                    }
-
-                    console.log(bPiece);
-
-        
-                });
-
-
+                }
+            }
 
 
 
         });
-    
-    
-    
-    
+
+
+
+
+
+    });
+
+
+
+
     //randomly select one word's definition to be the final definition (50/50)
     //return a string object in the format {word: fakeWord, definition: fakeDefinition}
-    
-    
-    
+
+
+
     return { word: 'fake-concatenated-word', definition: 'and some BS nonsense about what it means' }
 
-   
+
 
 }
 
