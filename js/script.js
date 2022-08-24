@@ -81,19 +81,15 @@ function render() {
         }
     }
 
-    // //render word and definition to user DEBUG ONLY
-    // $word.text(word.word);
-    // $definition.text(word.definition);
-
-    // return isReal;
+    return isReal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-//purpose: retrieve a random word from Words API
+//purpose: retrieve a random word and definition from Words API and post to Document
 //input: none
-//output: a string representing a random word
+//output: none
 ////////////////////////////////////////////////////////////////////////////////////
-const getRandomWord = function () {
+function findRealWord() {
 
     //random word API call
     const settings = {
@@ -108,12 +104,12 @@ const getRandomWord = function () {
     };
 
         $.ajax(settings).then((wordActual) => {
-            currentWord = wordActual;
-            $word.text(currentWord.word);
+            $word.text(wordActual.word);
             
             
             console.log(wordActual.word);
-
+            
+            //definition API call
             const settingsA = {
                 "async": true,
                 "crossDomain": true,
@@ -126,55 +122,23 @@ const getRandomWord = function () {
             };
             
             $.ajax(settingsA).then(function (wordDefinition) {
-                console.log(wordDefinition.definitions[0].definition);
-                $definition.text(wordDefinition.definitions[0].definition);
+                
+                //check if API even *has* definition
+                if (wordDefinition.definitions.length === 0){
+                    $definition.text("Definition not found :(");
+                }
+                else {
+                    $definition.text(wordDefinition.definitions[0].definition);
+                }
 
 
-            });
+            }, (error) => { 
+                $definition.text("Definition not found :(");
 
-
-
-
-
-
+            })
            
         })
-    console.log(currentWord);
-
-    //})
     return currentWord;
-}
-
-//getRandomWord();
-
-////////////////////////////////////////////////////////////////////////////////////
-//purpose: collect a random genuine word and definition
-//input: none
-//output: an object in the format - {word: realWord, definition: realDefinition}
-////////////////////////////////////////////////////////////////////////////////////
-const findRealWord = function () {
-
-    //API call for a random word
-    //const wordActual2 = getRandomWord();
-
-    console.log(currentWord);
-
-    let garbage = getRandomWord();
-    return garbage;
-    //console.log(garbage);
-
-
-
-
-    //API call to check frequency of use for word
-    //let wordCheck = wordObject.word;
-    //console.log(typeof checkFrequency("the"));
-
-    //if common, back to beginning of function
-    //if uncommon, API call to retrieve definition of word
-
-    //return a string object in the format {word: definition}
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
