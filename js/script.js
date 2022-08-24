@@ -175,22 +175,39 @@ function findFakeWordA() {
                     console.log(wordActualA);
                     console.log(wordActualB);
 
-                    let wordActualAA = 'Compound';
+                    let wordActualAA = 'Compound Word';
                     let wordActualBB = 'Oneword';
                     aIsCompound = false;
                     bIsCompound = false;
+                    let aPiece;
+                    let bPiece;
+
                     //console.log(WordActualAA);
                     
                     //checking A for compound word
-                    if (wordActualA.word.search(' ') != -1 || wordActualA.word.search('-') != -1 ){
+                    if (wordActualA.word.search(' ') != -1){
+                        aPiece = wordActualA.word.substr(0, wordActualA.word.search(' '));
+                        aIsCompound = true;
+                    }
+                    if (wordActualA.word.search('-') != -1){
+                        aPiece = wordActualA.word.substr(0, wordActualA.word.search('-'));
                         aIsCompound = true;
                     }
 
+                    console.log(aPiece);
+
                     //checking B for compound word
-                    if (wordActualB.word.search(' ') != -1 || wordActualB.word.search('-') != -1 ){
+                    if (wordActualB.word.search(' ') != -1){
+                        aPiece = wordActualB.word.substr(0, wordActualB.word.search(' '));
                         bIsCompound = true;
                     }
-        
+                    if (wordActualA.word.search('-') != -1){
+                        aPiece = wordActualB.word.substr(0, wordActualB.word.search('-'));
+                        bIsCompound = true;
+                    }
+
+                    console.log(bPiece);
+
                     console.log(aIsCompound);
                     console.log(bIsCompound);
         
