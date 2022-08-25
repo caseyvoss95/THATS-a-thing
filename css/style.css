@@ -16,7 +16,7 @@ h1 {
 p {
     display: inline-block;
     margin: 30px 30px 0 30px;
-    text-align: right;
+    text-align: left;
 }
 
 button {
