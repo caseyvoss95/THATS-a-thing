@@ -427,6 +427,8 @@ $.ajax(settings).done(function (syllablesA) {
         console.log(fakeWordA);
         console.log(fakeWordB);
 
+        const fakeWordFinal = fakeWordA + fakeWordB;
+        console.log(fakeWordFinal);
 
 
 
