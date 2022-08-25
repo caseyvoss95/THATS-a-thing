@@ -461,7 +461,7 @@ function removeQuestion() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-//purpose: checks if games is over, resets score and questionNum if true
+//purpose: checks if games is over
 //input: none
 //output: true if game is over, false if game is not over
 ////////////////////////////////////////////////////////////////////////////////////
@@ -471,18 +471,29 @@ function gameOver() {
         //notify user that game is over
         console.log("GAME OVER"); //TODO display as message in document
         console.log("Final score is " + score);
-
-        //reset counters
-        score = 0;
-        questionNum = 5;
-        $score.text(score);
-        $questionsNum.text(questionNum);
+        $word.text('GAME OVER');
+        $definition.text(`Final Score: ${score} press either key to play again`);
         return true;
     }
     else {
         return false;
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+//purpose: resets score and questions remaining
+//input: none
+//output: none
+////////////////////////////////////////////////////////////////////////////////////
+function resetGame(){
+    console.log("game reset is running");
+    score = 0;
+    questionNum = 5;
+    $score.text(score);
+    $questionsNum.text(questionNum);
+}
+
+
 
 function main() {
 
@@ -491,39 +502,52 @@ function main() {
     $questionsNum.text(questionNum);
 
     //render question
-    render();
+    if (!gameOver()){
+        render();
+    }
+    
+
+
 
     //listen for user choices TODO: DRY it up
     $yes.on('click', function () {
 
+    
+
+
+        
         if (isReal) {
-            scoreAdd(10);
+            scoreAdd(10); //yes correct
             removeQuestion();
             if (!gameOver()) {
                 isReal = render();
             }
             else {
-
+                resetGame();
             }
         }
         else {
-            console.log("WRONG");
+            console.log("WRONG"); //yes incorrect
             removeQuestion();
             if (!gameOver()) {
+                console.log("game is NOT over BABY")
                 isReal = render();
+            }
+            else {
+                resetGame();
             }
         }
     })
 
     $no.on('click', function () {
-        if (!isReal) {
+        if (!isReal) { //no correct
             scoreAdd(10);
             removeQuestion();
             if (!gameOver()) {
                 isReal = render();
             }
         }
-        else {
+        else { //no incorrect
             console.log("WRONG");
             removeQuestion();
             if (!gameOver()) {
@@ -533,5 +557,5 @@ function main() {
     })
 }
 
-//main();
+main();
 
