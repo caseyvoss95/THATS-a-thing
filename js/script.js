@@ -404,6 +404,7 @@ $.ajax(settings).done(function (syllablesA) {
         let syllableCountA = syllablesA.syllables.count;
         let syllableCountB = syllablesB.syllables.count;
         
+        //DEBUG ONLY
         console.log(syllableCountA);
         console.log(syllableCountB);
 
@@ -411,9 +412,23 @@ $.ajax(settings).done(function (syllablesA) {
         syllableCountA = Math.floor(Math.random() * (syllableCountA - 1)) + 1;
         syllableCountB = Math.floor(Math.random() * (syllableCountB - 1)) + 1;
 
-
+        //DEBUG ONLY
         console.log(syllableCountA);
         console.log(syllableCountB);
+        
+        //DEBUG ONLY
+        console.log(syllablesA.syllables.list.slice(0, syllableCountA));
+        console.log(syllablesB.syllables.list.slice(0, syllableCountB));
+
+        const fakeWordA = syllablesA.syllables.list.slice(0, syllableCountA).join("");
+        const fakeWordB = syllablesB.syllables.list.slice(0, syllableCountB).join("");
+        
+        //DEBUG ONLY
+        console.log(fakeWordA);
+        console.log(fakeWordB);
+
+
+
 
     });
 
