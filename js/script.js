@@ -143,33 +143,36 @@ function findFakeWordA() {
             let aPiece;
             let bPiece;
 
-            //checking A for compound word, slice if true
+            //checking A for compound word, take first half if true
             if (wordActualA.word.search(' ') != -1) {
                 aPiece = wordActualA.word.substr(0, wordActualA.word.search(' '));
             }
             else if (wordActualA.word.search('-') != -1) {
                 aPiece = wordActualA.word.substr(0, wordActualA.word.search('-'));
             }
-            else {
-                aPiece = wordActualA.word;
-            }
+            // else {
+            //     aPiece = wordActualA.word;
+            // }
 
+            //DEBUG
             console.log(aPiece);
 
-            //checking B for compound word, slice if true
+            //checking B for compound word, take second half if true
             if (wordActualB.word.search(' ') != -1) {
                 bPiece = wordActualB.word.substr(wordActualB.word.search(' '), wordActualB.length - 1);
             }
             else if (wordActualB.word.search('-') != -1) {
                 bPiece = wordActualB.word.substr((wordActualB.word.search('-'), wordActualB.length - 1));
             }
-            else {
-                bPiece = wordActualB.word;
-            }
+            // else {
+            //     bPiece = wordActualB.word;
+            // }
+
+            //DEBUG
             console.log(bPiece);
 
-            //final product created
-            if (aPiece || bPiece) { //concantenate if at least one compound word is present
+            //final output created
+            if (aPiece && bPiece) { //concantenate if at least one compound word is present
                 const connector = Math.round(Math.random());
                 console.log(connector);
                 if (connector) {
@@ -182,17 +185,107 @@ function findFakeWordA() {
 
                 }
             }
-            else {
+            else if (!aPiece && !bPiece) { //concatenate if both words are simple
 
 
-                //syllabel calls here
+                //syllabel API Call
+                const settings = {
+                    "async": true,
+                    "crossDomain": true,
+                    "url": "https://wordsapiv1.p.rapidapi.com/words/random/syllables",
+                    "method": "GET",
+                    "headers": {
+                        "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+                        "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+                    }
+                };
+
+                $.ajax(settings).done(function (syllablesA) {
+
+                    //syllabel API Call
+                    const settings = {
+                        "async": true,
+                        "crossDomain": true,
+                        "url": "https://wordsapiv1.p.rapidapi.com/words/symmetrical/syllables",
+                        "method": "GET",
+                        "headers": {
+                            "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+                            "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+                        }
+                    };
+
+                    $.ajax(settings).done(function (syllablesB) {
+
+                        console.log(syllablesA);
+                        console.log(syllablesB);
 
 
+                        //choosing  syllables for fake word
+                        let syllableCountA = syllablesA.syllables.count;
+                        let syllableCountB = syllablesB.syllables.count;
+
+                        //DEBUG ONLY
+                        console.log(syllableCountA);
+                        console.log(syllableCountB);
+
+                        //new syllable count is between 1 and (syllable total - 1)
+                        syllableCountA = Math.floor(Math.random() * (syllableCountA - 1)) + 1;
+                        syllableCountB = Math.floor(Math.random() * (syllableCountB - 1)) + 1;
+
+                        //DEBUG ONLY
+                        console.log(syllableCountA);
+                        console.log(syllableCountB);
+
+                        //DEBUG ONLY
+                        console.log(syllablesA.syllables.list.slice(0, syllableCountA));
+                        console.log(syllablesB.syllables.list.slice(0, syllableCountB));
+
+                        const fakeWordA = syllablesA.syllables.list.slice(0, syllableCountA).join("");
+                        const fakeWordB = syllablesB.syllables.list.slice(0, syllableCountB).join("");
+
+                        //DEBUG ONLY
+                        console.log(fakeWordA);
+                        console.log(fakeWordB);
+
+                        const fakeWordFinal = fakeWordA + fakeWordB;
+
+                        //DEBUG ONLY
+                        console.log(fakeWordFinal);
+
+
+
+                    });
+
+
+                });
 
             }
+            else if (!aPiece) {
+                const connector = Math.round(Math.random());
+                console.log(connector);
+                if (connector) {
+                    console.log(wordActualA.word + " " + bPiece);
+                    $word.text(wordActualA.word + " " + bPiece)
+                }
+                else if (!connector) {
+                    console.log(wordActualA.word + "-" + bPiece);
+                    $word.text(wordActualA.word + "-" + bPiece)
 
+                }
+            }
+            else if (!bPiece) {
+                const connector = Math.round(Math.random());
+                console.log(connector);
+                if (connector) {
+                    console.log(aPiece + " " + wordActualB.word);
+                    $word.text(aPiece + " " + wordActualB.word)
+                }
+                else if (!connector) {
+                    console.log(aPiece + "-" + wordActualB.word);
+                    $word.text(aPiece + "-" + wordActualB.word)
 
-
+                }
+            }
 
 
             //randomly select one word's definition to be the final definition (50/50)
@@ -366,73 +459,5 @@ function main() {
     })
 }
 
-//main();
+main();
 
-//syllables functionality TEST ZONE
-const settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "https://wordsapiv1.p.rapidapi.com/words/random/syllables",
-    "method": "GET",
-    "headers": {
-        "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-        "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-    }
-};
-
-$.ajax(settings).done(function (syllablesA) {
-
-
-    const settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://wordsapiv1.p.rapidapi.com/words/symmetrical/syllables",
-        "method": "GET",
-        "headers": {
-            "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-            "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-        }
-    };
-
-    $.ajax(settings).done(function (syllablesB) {
-
-        console.log(syllablesA);
-        console.log(syllablesB);
-
-        
-        //choosing  syllables for fake word
-        let syllableCountA = syllablesA.syllables.count;
-        let syllableCountB = syllablesB.syllables.count;
-        
-        //DEBUG ONLY
-        console.log(syllableCountA);
-        console.log(syllableCountB);
-
-        //new syllable count is between 1 and (syllable total - 1)
-        syllableCountA = Math.floor(Math.random() * (syllableCountA - 1)) + 1;
-        syllableCountB = Math.floor(Math.random() * (syllableCountB - 1)) + 1;
-
-        //DEBUG ONLY
-        console.log(syllableCountA);
-        console.log(syllableCountB);
-        
-        //DEBUG ONLY
-        console.log(syllablesA.syllables.list.slice(0, syllableCountA));
-        console.log(syllablesB.syllables.list.slice(0, syllableCountB));
-
-        const fakeWordA = syllablesA.syllables.list.slice(0, syllableCountA).join("");
-        const fakeWordB = syllablesB.syllables.list.slice(0, syllableCountB).join("");
-        
-        //DEBUG ONLY
-        console.log(fakeWordA);
-        console.log(fakeWordB);
-
-        const fakeWordFinal = fakeWordA + fakeWordB;
-        console.log(fakeWordFinal);
-
-
-
-    });
-
-
-});
