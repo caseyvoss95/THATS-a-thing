@@ -1,8 +1,7 @@
 //GLOBAL VARIABLES
 
 let score = 0;
-let questionNum =5;
-let currentWord;
+let questionNum = 5;
 let isReal;
 
 
@@ -25,18 +24,15 @@ const $reset = $('#reset');
 ////////////////////////////////////////////////////////////////////////////////////
 function render() {
 
-    //decide if word will be real or fake (50/50)
+    //real or fake word chosen 50/50
     isReal = Math.round(Math.random());
-    //isReal = false; //DEBUG ONLY
 
-    if (isReal) { //real word chosen
+    if (isReal) {
         findRealWord();
     }
-    else {         
-        findFakeWord();
+    else {
+        createFakeWord();
     }
-
-    return isReal;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -61,8 +57,6 @@ function findRealWord() {
     $.ajax(settings).then((wordActual) => {
 
         $word.text(wordActual.word);
-
-        console.log(wordActual.word);
 
         //definition API call
         const settingsA = {
@@ -96,11 +90,11 @@ function findRealWord() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-//purpose: combine two random words to create a new fake word
+//purpose: combine two random words to create a new fake word, post to document
 //input: none
 //output: none
 ////////////////////////////////////////////////////////////////////////////////////
-function findFakeWord() {
+function createFakeWord() {
 
     //first random word API call
     const settings = {
@@ -129,9 +123,6 @@ function findFakeWord() {
         };
 
         $.ajax(settings).then((wordActualB) => {
-            //DEBUG ONLY
-            console.log(wordActualA);
-            console.log(wordActualB);
 
             let aPiece;
             let bPiece;
@@ -144,9 +135,6 @@ function findFakeWord() {
                 aPiece = wordActualA.word.substr(0, wordActualA.word.search('-'));
             }
 
-            //DEBUG
-            console.log(aPiece);
-
             //checking B for compound word, take second half if true
             if (wordActualB.word.search(' ') != -1) {
                 bPiece = wordActualB.word.substr(wordActualB.word.search(' '), wordActualB.length - 1);
@@ -155,25 +143,18 @@ function findFakeWord() {
                 bPiece = wordActualB.word.substr((wordActualB.word.search('-'), wordActualB.length - 1));
             }
 
-            //DEBUG
-            console.log(bPiece);
-
             //final output created
             if (aPiece && bPiece) { //concantenate if at least one compound word is present
                 const connector = Math.round(Math.random());
-                console.log(connector);
                 if (connector) {
-                    console.log(aPiece + " " + bPiece);
                     $word.text(aPiece + " " + bPiece)
                 }
                 else if (!connector) {
-                    console.log(aPiece + "-" + bPiece);
                     $word.text(aPiece + "-" + bPiece)
 
                 }
             }
             else if (!aPiece && !bPiece) { //concatenate if both words are simple
-
 
                 //syllabel API Call
                 const settings = {
@@ -203,17 +184,9 @@ function findFakeWord() {
 
                     $.ajax(settings).done(function (syllablesB) {
 
-                        console.log(syllablesA);
-                        console.log(syllablesB);
-
-
                         //choosing  syllables for fake word
                         let syllableCountA = syllablesA.syllables.count;
                         let syllableCountB = syllablesB.syllables.count;
-
-                        //DEBUG ONLY
-                        console.log(syllableCountA);
-                        console.log(syllableCountB);
 
                         //checking if syllable API calls return bogus empty object :(
                         if (!syllableCountA) {
@@ -226,10 +199,6 @@ function findFakeWord() {
                         //new syllable count is between 1 and (syllable total - 1)
                         syllableCountA = Math.floor(Math.random() * (syllableCountA - 1)) + 1;
                         syllableCountB = Math.floor(Math.random() * (syllableCountB - 1)) + 1;
-
-                        //DEBUG ONLY
-                        console.log(syllableCountA);
-                        console.log(syllableCountB);
 
                         //checking if syllable API calls return bogus empty object :(
                         if (!syllablesA.syllables.list) {
@@ -248,15 +217,8 @@ function findFakeWord() {
 
                         }
 
-                        //DEBUG ONLY
-                        console.log(fakeWordA);
-                        console.log(fakeWordB);
-
-                        const fakeWordFinal = fakeWordA + fakeWordB;
                         $word.text(fakeWordA + fakeWordB);
                         //DEBUG ONLY
-                        console.log(fakeWordFinal);
-
 
                         //definition API call
                         const settingsA = {
@@ -270,56 +232,37 @@ function findFakeWord() {
                             }
                         };
 
-
-
                         $.ajax(settingsA).then(function (wordDefinition) {
 
-                            console.log(wordDefinition);
-
-                            console.log("searching for definition");
                             //check if API even *has* definition
                             if (wordDefinition.definitions.length === 0) {
                                 $definition.text("");
                             }
                             else {
                                 $definition.text(wordDefinition.definitions[0].definition);
-                                console.log(wordDefinition.definitions[0].definition)
                             }
-
-
                         }, (error) => {
                             $definition.text("Definition not found :(");
-
                         })
-
                     });
-
-
                 });
-
             }
             else if (!aPiece) { //concatenate if just A is simple
                 const connector = Math.round(Math.random());
-                console.log(connector);
                 if (connector) {
-                    console.log(wordActualA.word + " " + bPiece);
                     $word.text(wordActualA.word + " " + bPiece)
                 }
                 else if (!connector) {
-                    console.log(wordActualA.word + "-" + bPiece);
                     $word.text(wordActualA.word + "-" + bPiece)
 
                 }
             }
             else if (!bPiece) { //concatenate if just B is simple
                 const connector = Math.round(Math.random());
-                console.log(connector);
                 if (connector) {
-                    console.log(aPiece + " " + wordActualB.word);
                     $word.text(aPiece + " " + wordActualB.word)
                 }
                 else if (!connector) {
-                    console.log(aPiece + "-" + wordActualB.word);
                     $word.text(aPiece + "-" + wordActualB.word)
 
                 }
@@ -340,16 +283,12 @@ function findFakeWord() {
 
             $.ajax(settingsA).then(function (wordDefinition) {
 
-                console.log(wordDefinition);
-
-                console.log("searching for definition");
                 //check if API even *has* definition
                 if (wordDefinition.definitions.length === 0) {
                     $definition.text("");
                 }
                 else {
                     $definition.text(wordDefinition.definitions[0].definition);
-                    console.log(wordDefinition.definitions[0].definition)
                 }
 
 
@@ -359,65 +298,6 @@ function findFakeWord() {
             })
         });
     });
-
-
-    return { word: 'fake-concatenated-word', definition: 'and some BS nonsense about what it means' }
-
-
-
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-//purpose: fabricate a convincing fake word by swapping vowels and consonants
-//input: none
-//output: an object with one string key-value pair - {word: fakeWord, definition: fakeDefinition}
-////////////////////////////////////////////////////////////////////////////////////
-function findFakeWordB() {
-    return { word: 'fake-letter-swap-word', definition: 'and some BS nonsense about what it means' }
-
-    //API call for one random word that fits criteria (fine tuning and play testing needed)
-    //swap vowels and consonants in a convincing way (requires some planning)
-    //API call for  another random words definition, attach this to the the word object
-    //return a string object in the format {word: fakeWord, definition: fakeDefinition}
-
-}
-
-
-// console.log(wordA);
-// wordA = wordActual.word;
-// console.log(wordA);
-// console.log(wordActual.word);
-// def = wordActual.def;
-// NOTES: the JSON object is completely accessible in this scope. I need to figure out how to save the data I found here and use it outside of this scope. look up then() method.
-
-
-////////////////////////////////////////////////////////////////////////////////////
-//purpose: check the frequency of a use of a given word via Words API
-//input: string of word being checked
-//output: number score from 1 - 7
-////////////////////////////////////////////////////////////////////////////////////
-function checkFrequency(word) {
-
-    //frequency API call
-    const settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": `https://wordsapiv1.p.rapidapi.com/words/${word}/frequency`,
-        "method": "GET",
-        "headers": {
-            "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-            "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-        }
-    };
-    return 'foo';
-    $.ajax(settings).done(function (wordActual) {
-        console.log(wordActual.frequency.zipf);
-
-        return 'foo';
-        //return typeof wordActual.frequency.zipf;
-    });
-
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -449,8 +329,6 @@ function gameOver() {
 
     if (questionNum === 0) {
         //notify user that game is over
-        console.log("GAME OVER"); //TODO display as message in document
-        console.log("Final score is " + score);
         $word.text('GAME OVER');
         $definition.text(`Final Score: ${score}`);
         return true;
@@ -461,12 +339,11 @@ function gameOver() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-//purpose: resets score and questions remaining
+//purpose: resets score and questions remaining counters
 //input: none
 //output: none
 ////////////////////////////////////////////////////////////////////////////////////
 function resetGame() {
-    console.log("game reset is running");
     score = 0;
     questionNum = 5;
     $score.text(score);
@@ -475,7 +352,6 @@ function resetGame() {
 
 function main() {
 
-    console.log('Main Activated');
     //display counters
     $score.text(score);
     $questionsNum.text(questionNum);
@@ -487,50 +363,42 @@ function main() {
     //TODO: DRY it up
     $yes.on('click', function () {
 
-        //game over 
-        if (questionNum === 0) {
+        if (questionNum === 0) { //game over behavior
             return;
-            // render();
         }
 
-        if (isReal) {
-            scoreAdd(10); //yes correct
+        if (isReal) { //yes correct
+            scoreAdd(10);
             removeQuestion();
             if (!gameOver()) {
-                isReal = render();
+                render();
             }
         }
-        else {
-            console.log("WRONG"); //yes incorrect
+        else { //yes incorrect
             removeQuestion();
             if (!gameOver()) {
-                console.log("game is NOT over BABY")
-                isReal = render();
+                render();
             }
         }
     })
 
     $no.on('click', function () {
 
-        //game over 
-        if (questionNum === 0) {
+        if (questionNum === 0) { //game over behavior
             return;
-            // render();
         }
-
 
         if (!isReal) { //no correct
             scoreAdd(10);
             removeQuestion();
             if (!gameOver()) {
-                isReal = render();
+                render();
             }
         }
         else { //no incorrect
-            console.log("WRONG");
             removeQuestion();
             if (!gameOver()) {
-                isReal = render();
+                render();
             }
         }
     })
@@ -542,4 +410,3 @@ function main() {
 }
 
 main();
-
