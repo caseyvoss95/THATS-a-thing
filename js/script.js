@@ -1,7 +1,7 @@
 //GLOBAL VARIABLES
 
-let score;
-let questionNum;
+let score = 0;
+let questionNum =5;
 let currentWord;
 let isReal;
 
@@ -26,21 +26,14 @@ const $reset = $('#reset');
 function render() {
 
     //decide if word will be real or fake (50/50)
-    //isReal = Math.round(Math.random());
-    isReal = false; //DEBUG ONLY
+    isReal = Math.round(Math.random());
+    //isReal = false; //DEBUG ONLY
 
     if (isReal) { //real word chosen
         findRealWord();
     }
-    else { //randomly choose between 2 procedures for fake word (50/50):
-        //const fake = Math.round(Math.random());
-        const fake = true; //DEBUG only
-        if (fake) {
-            findFakeWordA();
-        }
-        else {
-            findFakeWordB();
-        }
+    else {         
+        findFakeWord();
     }
 
     return isReal;
@@ -107,7 +100,7 @@ function findRealWord() {
 //input: none
 //output: none
 ////////////////////////////////////////////////////////////////////////////////////
-function findFakeWordA() {
+function findFakeWord() {
 
     //first random word API call
     const settings = {
@@ -364,22 +357,8 @@ function findFakeWordA() {
                 $definition.text("Definition not found :(");
 
             })
-
-
-
-
         });
-
-
-
-
-
     });
-
-
-
-
-
 
 
     return { word: 'fake-concatenated-word', definition: 'and some BS nonsense about what it means' }
@@ -489,30 +468,23 @@ function gameOver() {
 function resetGame() {
     console.log("game reset is running");
     score = 0;
-    questionNum = 2;
+    questionNum = 5;
     $score.text(score);
     $questionsNum.text(questionNum);
 }
 
-
-
 function main() {
 
     console.log('Main Activated');
-    //set counters
-    score = 0;
-    questionNum = 2;
-
+    //display counters
     $score.text(score);
     $questionsNum.text(questionNum);
 
     //render first question
     render();
 
-
-
-
-    //listen for user choices TODO: DRY it up
+    //listen for user choices 
+    //TODO: DRY it up
     $yes.on('click', function () {
 
         //game over 
