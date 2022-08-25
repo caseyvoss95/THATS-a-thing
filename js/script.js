@@ -192,7 +192,7 @@ function findFakeWordA() {
                 const settings = {
                     "async": true,
                     "crossDomain": true,
-                    "url": "https://wordsapiv1.p.rapidapi.com/words/random/syllables",
+                    "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActualA.word}/syllables`,
                     "method": "GET",
                     "headers": {
                         "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
@@ -206,7 +206,7 @@ function findFakeWordA() {
                     const settings = {
                         "async": true,
                         "crossDomain": true,
-                        "url": "https://wordsapiv1.p.rapidapi.com/words/symmetrical/syllables",
+                        "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActualB.word}/syllables`,
                         "method": "GET",
                         "headers": {
                             "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
@@ -228,6 +228,14 @@ function findFakeWordA() {
                         console.log(syllableCountA);
                         console.log(syllableCountB);
 
+                        //checking if syllable API calls return bogus empty object :(
+                        if (!syllableCountA){
+                            syllableCountA = 1;
+                        }
+                        if (!syllableCountB){
+                            syllableCountB = 1;
+                        }
+
                         //new syllable count is between 1 and (syllable total - 1)
                         syllableCountA = Math.floor(Math.random() * (syllableCountA - 1)) + 1;
                         syllableCountB = Math.floor(Math.random() * (syllableCountB - 1)) + 1;
@@ -236,19 +244,36 @@ function findFakeWordA() {
                         console.log(syllableCountA);
                         console.log(syllableCountB);
 
-                        //DEBUG ONLY
-                        console.log(syllablesA.syllables.list.slice(0, syllableCountA));
-                        console.log(syllablesB.syllables.list.slice(0, syllableCountB));
+                        //checking if syllable API calls return bogus empty object :(
+                        if (!syllablesA.syllables.list){
+                            fakeWordA = wordActualA.word;
+                        }
+                        else {
+                            fakeWordA = syllablesA.syllables.list.slice(0, syllableCountA).join("");
 
-                        const fakeWordA = syllablesA.syllables.list.slice(0, syllableCountA).join("");
-                        const fakeWordB = syllablesB.syllables.list.slice(0, syllableCountB).join("");
+                        }
+                        
+                        if (!syllablesB.syllables.list){
+                            fakeWordB = wordActualB.word;
+                        }
+                        else {
+                            fakeWordB = syllablesB.syllables.list.slice(0, syllableCountB).join("");
+
+                        }
+
+                        //DEBUG ONLY
+                        // console.log(syllablesA.syllables.list.slice(0, syllableCountA));
+                        // console.log(syllablesB.syllables.list.slice(syllableCountB * -1));
+
+                        // fakeWordA = syllablesA.syllables.list.slice(0, syllableCountA).join("");
+                        // fakeWordB = syllablesB.syllables.list.slice(syllableCountB * -1).join("");
 
                         //DEBUG ONLY
                         console.log(fakeWordA);
                         console.log(fakeWordB);
 
                         const fakeWordFinal = fakeWordA + fakeWordB;
-
+                        $word.text(fakeWordA + fakeWordB);
                         //DEBUG ONLY
                         console.log(fakeWordFinal);
 
