@@ -4,9 +4,20 @@ body {
     text-align: center;
 }
 
+h1 {
+    margin: 50px 0 50px 0;
+}
+
+#definition {
+    margin-bottom: 50px;
+
+}
+
+
 p {
     display: inline-block;
-    margin: 0px 5px 0px 5px;
+    margin: 30px 30px 0 30px;
+    text-align: right;
 }
 
 button {
@@ -14,3 +25,22 @@ button {
     padding: 25px;
 }
 
+#score-board {
+    margin-right: 0px;
+}
+
+
+@media only screen and (min-width: 1024px) {
+
+    button {
+        margin: 100px;
+        padding: 100px;
+    }
+
+    body {
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        text-align: center;
+        font-size: 30px;
+    }
+
+}
