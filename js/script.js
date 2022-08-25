@@ -150,9 +150,6 @@ function findFakeWordA() {
             else if (wordActualA.word.search('-') != -1) {
                 aPiece = wordActualA.word.substr(0, wordActualA.word.search('-'));
             }
-            // else {
-            //     aPiece = wordActualA.word;
-            // }
 
             //DEBUG
             console.log(aPiece);
@@ -164,9 +161,6 @@ function findFakeWordA() {
             else if (wordActualB.word.search('-') != -1) {
                 bPiece = wordActualB.word.substr((wordActualB.word.search('-'), wordActualB.length - 1));
             }
-            // else {
-            //     bPiece = wordActualB.word;
-            // }
 
             //DEBUG
             console.log(bPiece);
@@ -262,13 +256,6 @@ function findFakeWordA() {
                         }
 
                         //DEBUG ONLY
-                        // console.log(syllablesA.syllables.list.slice(0, syllableCountA));
-                        // console.log(syllablesB.syllables.list.slice(syllableCountB * -1));
-
-                        // fakeWordA = syllablesA.syllables.list.slice(0, syllableCountA).join("");
-                        // fakeWordB = syllablesB.syllables.list.slice(syllableCountB * -1).join("");
-
-                        //DEBUG ONLY
                         console.log(fakeWordA);
                         console.log(fakeWordB);
 
@@ -276,9 +263,6 @@ function findFakeWordA() {
                         $word.text(fakeWordA + fakeWordB);
                         //DEBUG ONLY
                         console.log(fakeWordFinal);
-
-
-
                     });
 
 
