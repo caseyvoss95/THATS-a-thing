@@ -1,38 +1,3 @@
-//random word API call
-// const settings = {
-// 	"async": true,
-// 	"crossDomain": true,
-// 	"url": "https://wordsapiv1.p.rapidapi.com/words/?random=true",
-// 	"method": "GET",
-// 	"headers": {
-// 		"X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-// 		"X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-// 	}
-// };
-
-// $.ajax(settings).done(function (response) {
-// 	console.log(response.word);
-// });
-
-
-//frequency API call
-// const settings = {
-// 	"async": true,
-// 	"crossDomain": true,
-// 	"url": "https://wordsapiv1.p.rapidapi.com/words/clinometer/frequency",
-// 	"method": "GET",
-// 	"headers": {
-// 		"X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-// 		"X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-// 	}
-// };
-
-// $.ajax(settings).done(function (response) {
-// 	console.log(response);
-// });
-
-
-
 //GLOBAL VARIABLES
 
 let score = 0;
@@ -434,13 +399,27 @@ $.ajax(settings).done(function (syllablesA) {
         console.log(syllablesA);
         console.log(syllablesB);
 
-        const syllableTotal = syllablesA.syllables.count + syllablesB.syllables.count - 1;
+        
+        //deciding which syllables to use in fake word
+        
+        let syllableCountA = syllablesA.syllables.count;
+        let syllableCountB= syllablesB.syllables.count;
+        
+        console.log(syllableCountA);
+        console.log(syllableCountB);
 
-        console.log(syllableTotal);
+        //randomly minimize new
 
-        //fake word has between 2 and (n - 1) syllables 
-        const newSyllable = Math.floor(Math.random() * (syllableTotal - 1)) + 2;
-        console.log(newSyllable);
+
+
+        // const syllableTotal = syllablesA.syllables.count + syllablesB.syllables.count - 1;
+
+        // console.log("syllable total: " + syllableTotal);
+
+        //swithPoint CANCELLED
+        // //fake word has between 2 and (n - 1) syllables 
+        // const newSyllable = Math.floor(Math.random() * (syllableTotal - 1)) + 2;
+        // console.log("new word syllables: " + newSyllable);
 
     });
 
