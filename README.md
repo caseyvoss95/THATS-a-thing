@@ -22,7 +22,7 @@ Screenshot
 Getting Started
 --
 
-You must decide if this mysterious collection of English characters are real.. or pure nonese! Click Here to play deployed game.
+You must decide if this mysterious collection of English characters are real.. or pure nonese! [Click Here](https://caseyvoss95.github.io/THATS-a-word/) to play deployed game.
 
 
 Future Enhancements
