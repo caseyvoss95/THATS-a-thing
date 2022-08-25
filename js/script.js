@@ -25,7 +25,7 @@ const $questionsNum = $('#questionsNum');
 function render() {
 
     //decide if word will be real or fake (50/50)
-    //const isReal = Math.round(Math.random());
+    //isReal = Math.round(Math.random());
     isReal = false; //DEBUG ONLY
 
     if (isReal) { //real word chosen
@@ -65,8 +65,8 @@ function findRealWord() {
     };
 
     $.ajax(settings).then((wordActual) => {
-        $word.text(wordActual.word);
 
+        $word.text(wordActual.word);
 
         console.log(wordActual.word);
 
@@ -86,7 +86,7 @@ function findRealWord() {
 
             //check if API even *has* definition
             if (wordDefinition.definitions.length === 0) {
-                $definition.text("Definition not found :(");
+                $definition.text("");
             }
             else {
                 $definition.text(wordDefinition.definitions[0].definition);
@@ -99,7 +99,6 @@ function findRealWord() {
         })
 
     })
-    return currentWord;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -223,10 +222,10 @@ function findFakeWordA() {
                         console.log(syllableCountB);
 
                         //checking if syllable API calls return bogus empty object :(
-                        if (!syllableCountA){
+                        if (!syllableCountA) {
                             syllableCountA = 1;
                         }
-                        if (!syllableCountB){
+                        if (!syllableCountB) {
                             syllableCountB = 1;
                         }
 
@@ -239,15 +238,15 @@ function findFakeWordA() {
                         console.log(syllableCountB);
 
                         //checking if syllable API calls return bogus empty object :(
-                        if (!syllablesA.syllables.list){
+                        if (!syllablesA.syllables.list) {
                             fakeWordA = wordActualA.word;
                         }
                         else {
                             fakeWordA = syllablesA.syllables.list.slice(0, syllableCountA).join("");
 
                         }
-                        
-                        if (!syllablesB.syllables.list){
+
+                        if (!syllablesB.syllables.list) {
                             fakeWordB = wordActualB.word;
                         }
                         else {
@@ -263,13 +262,49 @@ function findFakeWordA() {
                         $word.text(fakeWordA + fakeWordB);
                         //DEBUG ONLY
                         console.log(fakeWordFinal);
+
+
+                        //definition API call
+                        const settingsA = {
+                            "async": true,
+                            "crossDomain": true,
+                            "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActualA.word}/definitions`,
+                            "method": "GET",
+                            "headers": {
+                                "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+                                "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+                            }
+                        };
+
+
+
+                        $.ajax(settingsA).then(function (wordDefinition) {
+
+                            console.log(wordDefinition);
+
+                            console.log("searching for definition");
+                            //check if API even *has* definition
+                            if (wordDefinition.definitions.length === 0) {
+                                $definition.text("");
+                            }
+                            else {
+                                $definition.text(wordDefinition.definitions[0].definition);
+                                console.log(wordDefinition.definitions[0].definition)
+                            }
+
+
+                        }, (error) => {
+                            $definition.text("Definition not found :(");
+
+                        })
+
                     });
 
 
                 });
 
             }
-            else if (!aPiece) {
+            else if (!aPiece) { //concatenate if just A is simple
                 const connector = Math.round(Math.random());
                 console.log(connector);
                 if (connector) {
@@ -282,7 +317,7 @@ function findFakeWordA() {
 
                 }
             }
-            else if (!bPiece) {
+            else if (!bPiece) { //concatenate if just B is simple
                 const connector = Math.round(Math.random());
                 console.log(connector);
                 if (connector) {
@@ -296,8 +331,38 @@ function findFakeWordA() {
                 }
             }
 
+            //definition API call
+            const settingsA = {
+                "async": true,
+                "crossDomain": true,
+                "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActualA.word}/definitions`,
+                "method": "GET",
+                "headers": {
+                    "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+                    "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+                }
+            };
 
-            //randomly select one word's definition to be the final definition (50/50)
+
+            $.ajax(settingsA).then(function (wordDefinition) {
+
+                console.log(wordDefinition);
+
+                console.log("searching for definition");
+                //check if API even *has* definition
+                if (wordDefinition.definitions.length === 0) {
+                    $definition.text("");
+                }
+                else {
+                    $definition.text(wordDefinition.definitions[0].definition);
+                    console.log(wordDefinition.definitions[0].definition)
+                }
+
+
+            }, (error) => {
+                $definition.text("Definition not found :(");
+
+            })
 
 
 
