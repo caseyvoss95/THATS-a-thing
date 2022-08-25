@@ -400,26 +400,20 @@ $.ajax(settings).done(function (syllablesA) {
         console.log(syllablesB);
 
         
-        //deciding which syllables to use in fake word
-        
+        //choosing  syllables for fake word
         let syllableCountA = syllablesA.syllables.count;
-        let syllableCountB= syllablesB.syllables.count;
+        let syllableCountB = syllablesB.syllables.count;
         
         console.log(syllableCountA);
         console.log(syllableCountB);
 
-        //randomly minimize new
+        //new syllable count is between 1 and (syllable total - 1)
+        syllableCountA = Math.floor(Math.random() * (syllableCountA - 1)) + 1;
+        syllableCountB = Math.floor(Math.random() * (syllableCountB - 1)) + 1;
 
 
-
-        // const syllableTotal = syllablesA.syllables.count + syllablesB.syllables.count - 1;
-
-        // console.log("syllable total: " + syllableTotal);
-
-        //swithPoint CANCELLED
-        // //fake word has between 2 and (n - 1) syllables 
-        // const newSyllable = Math.floor(Math.random() * (syllableTotal - 1)) + 2;
-        // console.log("new word syllables: " + newSyllable);
+        console.log(syllableCountA);
+        console.log(syllableCountB);
 
     });
 
