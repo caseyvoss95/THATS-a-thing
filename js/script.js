@@ -5,8 +5,6 @@ let questionNum = 5;
 let isReal;
 let wordObjectA;
 let wordObjectB;
-let foo = "foo";
-
 
 //DOM ELEMENTS
 
@@ -28,8 +26,8 @@ const $reset = $('#reset');
 function render() {
 
     //real or fake word chosen 50/50
-    //isReal = Math.round(Math.random());
-    isReal = true;
+    isReal = Math.round(Math.random());
+    // isReal = true;
     if (isReal) {
         findRealWord();
     }
@@ -74,9 +72,6 @@ function callAPI(word, attribute, wordObject) {
     });
 }
 
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: retrieve a random word and definition from Words API and post to Document
 //input: none
@@ -84,56 +79,18 @@ function callAPI(word, attribute, wordObject) {
 ////////////////////////////////////////////////////////////////////////////////////
 function findRealWord() {
 
-    //find random word and display
-    callAPI(0, 0, wordObjectA);
+    //find random word and definition
+    callAPI(0, 0, 0);
     $word.text(wordObjectA.word);
+    callAPI(wordObjectA.word, 'definitions', 0);
 
-
-    //random word API call
-    const settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://wordsapiv1.p.rapidapi.com/words/?random=true",
-        "method": "GET",
-        "headers": {
-            "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-            "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-        }
-    };
-
-    $.ajax(settings).then((wordActual) => {
-
-        $word.text(wordActual.word);
-
-        //definition API call
-        const settingsA = {
-            "async": true,
-            "crossDomain": true,
-            "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActual.word}/definitions`,
-            "method": "GET",
-            "headers": {
-                "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-                "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-            }
-        };
-
-        $.ajax(settingsA).then(function (wordDefinition) {
-
-            //check if API even *has* definition
-            if (wordDefinition.definitions.length === 0) {
-                $definition.text("");
-            }
-            else {
-                $definition.text(wordDefinition.definitions[0].definition);
-            }
-
-
-        }, (error) => {
-            $definition.text("Definition not found :(");
-
-        })
-
-    })
+    //check if API definition array is populated
+    if (wordObjectA.definitions.length === 0) {
+        $definition.text("");
+    }
+    else {
+        $definition.text(wordObjectA.definitions[0].definition);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -456,19 +413,4 @@ function main() {
     })
 }
 
-//main();
-console.log(wordObjectA);
-callAPI("definitions", "dog", 0);
-console.log(wordObjectA);
-callAPI("syllables", "dog", 0);
-console.log(wordObjectA);
-callAPI(0,0,0);
-console.log(wordObjectA);
-
-console.log(wordObjectB);
-callAPI("definitions", "dog", 1);
-console.log(wordObjectB);
-callAPI("syllables", "dog", 1);
-console.log(wordObjectB);
-callAPI(0,0,1);
-console.log(wordObjectB);
+main();
