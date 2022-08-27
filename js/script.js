@@ -26,8 +26,8 @@ const $reset = $('#reset');
 function render() {
 
     //real or fake word chosen 50/50
-    isReal = Math.round(Math.random());
-    //isReal = false;
+    //isReal = Math.round(Math.random());
+    isReal = false;
     if (isReal) {
         findRealWord();
     }
@@ -105,23 +105,22 @@ function createFakeWord() {
     callAPI(0, 0, 0);
     callAPI(0, 0, 1);
 
+    console.log(wordObjectA);
+    console.log(wordObjectB);
+
+
     let aPiece;
     let bPiece;
     
     //TODO: DRY further
     //Compound word check and slice
-    if (compoundCheck(wordObjectA.word) === 1){
-        aPiece = compoundSlice(wordObjectA.word, ' ', 0);
-    }
-    else if (compoundCheck(wordObjectA.word) === 2){
-        aPiece = compoundSlice(wordObjectA.word, '-', 0);
+    if (compoundCheck(wordObjectA.word)){
+        aPiece = compoundSlice(wordObjectA.word, compoundChoose(compoundCheck(wordObjectA.word)), 0);
     }
 
-    if (compoundCheck(wordObjectB.word) === 1){
-        bPiece = compoundSlice(wordObjectB.word, ' ', 1);
-    }
-    else if (compoundCheck(wordObjectA.word) === 2){
-        bPiece = compoundSlice(wordObjectA.word, '-', 1);
+
+    if (compoundCheck(wordObjectB.word)){
+        bPiece = compoundSlice(wordObjectB.word, compoundChoose(compoundCheck(wordObjectB.word)), 1);
     }
 
     //final output created
@@ -242,6 +241,20 @@ function compoundCheck(word){
     }
     else {
         return 0;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//purpose: delegates how a compound word will be sliced
+//input: slice choice
+//output: returns symbol that divdes the word
+////////////////////////////////////////////////////////////////////////////////////
+function compoundChoose(choice){
+    if (choice === 1){
+        return ' ';
+    }
+    else {
+        return '-';
     }
 }
 
@@ -381,3 +394,8 @@ console.log(compoundSlice("big-toast", '-', 1));
 
 console.log(compoundSlice("big toast", ' ', 0));
 console.log(compoundSlice("big toast", ' ', 1));
+
+
+console.log(compoundChoose(0));
+console.log(compoundChoose(1));
+console.log(compoundChoose(2));
