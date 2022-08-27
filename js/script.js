@@ -3,6 +3,8 @@
 let score = 0;
 let questionNum = 5;
 let isReal;
+let wordObjectA;
+let wordObjectB;
 
 
 //DOM ELEMENTS
@@ -34,6 +36,41 @@ function render() {
         createFakeWord();
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+//purpose: creates an AJAX call to Words API with the desired paramaters
+//attributes used: definitions, syllables, random
+//note: To retrieve a random word, set word and attribute to 0
+//input: word, attribute, and JSON object to be overwritten
+//output: sets global JSON wordObject to the results of the call
+////////////////////////////////////////////////////////////////////////////////////
+function callAPI(word, attribute, wordObject){
+
+    //Syllable API Call
+    const settings = {
+        "async": false,
+        "crossDomain": true,
+        "url": `https://wordsapiv1.p.rapidapi.com/words/${word}/${attribute}`,
+        "method": "GET",
+        "headers": {
+            "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
+            "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+        }
+    };
+
+    //overwrite URL attribute if random word desired
+    if (!word){
+        settings.url = "https://wordsapiv1.p.rapidapi.com/words/?random=true"
+    }
+
+    $.ajax(settings).done(function (callResult) {
+        wordObject = callResult;
+    });
+
+}
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: retrieve a random word and definition from Words API and post to Document
@@ -409,4 +446,4 @@ function main() {
     })
 }
 
-main();
+//main();
