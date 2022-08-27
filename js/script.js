@@ -27,7 +27,7 @@ function render() {
 
     //real or fake word chosen 50/50
     isReal = Math.round(Math.random());
-    // isReal = true;
+    //isReal = false;
     if (isReal) {
         findRealWord();
     }
@@ -84,6 +84,7 @@ function findRealWord() {
     $word.text(wordObjectA.word);
     callAPI(wordObjectA.word, 'definitions', 0);
 
+    //TODO: make seperate function!
     //check if API definition array is populated
     if (wordObjectA.definitions.length === 0) {
         $definition.text("");
@@ -100,208 +101,129 @@ function findRealWord() {
 ////////////////////////////////////////////////////////////////////////////////////
 function createFakeWord() {
 
-    //first random word API call
-    const settings = {
-        "async": true,
-        "crossDomain": true,
-        "url": "https://wordsapiv1.p.rapidapi.com/words/?random=true",
-        "method": "GET",
-        "headers": {
-            "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-            "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
+    //random word calls
+    callAPI(0, 0, 0);
+    callAPI(0, 0, 1);
+
+    let aPiece;
+    let bPiece;
+
+    //Slicing words TODO: DRY!
+    //checking A for compound word, take first half if true
+    if (wordObjectA.word.search(' ') != -1) {
+        aPiece = wordObjectA.word.substr(0, wordObjectA.word.search(' '));
+    }
+    else if (wordObjectA.word.search('-') != -1) {
+        aPiece = wordObjectA.word.substr(0, wordObjectA.word.search('-'));
+    }
+
+    //checking B for compound word, take second half if true
+    if (wordObjectB.word.search(' ') != -1) {
+        bPiece = wordObjectB.word.substr(wordObjectB.word.search(' '), wordObjectB.length - 1);
+    }
+    else if (wordObjectB.word.search('-') != -1) {
+        bPiece = wordObjectB.word.substr((wordObjectB.word.search('-'), wordObjectB.length - 1));
+    }
+
+    //final output created
+    if (aPiece && bPiece) { //concantenate if at least one compound word is present
+        const connector = Math.round(Math.random());
+        if (connector) {
+            $word.text(aPiece + " " + bPiece)
         }
-    };
+        else if (!connector) {
+            $word.text(aPiece + "-" + bPiece)
 
-    $.ajax(settings).then((wordActualA) => {
+        }
+    }
+    else if (!aPiece && !bPiece) { //concatenate if both words are simple
 
-        //second random word API call
-        const settings = {
-            "async": true,
-            "crossDomain": true,
-            "url": "https://wordsapiv1.p.rapidapi.com/words/?random=true",
-            "method": "GET",
-            "headers": {
-                "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-                "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-            }
-        };
+        //syllabel API Call
+        callAPI(wordObjectA.word, 'syllables', 0);
+        callAPI(wordObjectA.word, 'syllables', 1);
 
-        $.ajax(settings).then((wordActualB) => {
+        //choosing  syllables for fake word
+        let syllableCountA = wordObjectA.syllables.count;
+        let syllableCountB = wordObjectB.syllables.count;
 
-            let aPiece;
-            let bPiece;
+        //DRY this (don't need extra vars above)
+        //checking if syllable API calls return bogus empty object :(
+        if (!syllableCountA) {
+            syllableCountA = 1;
+        }
+        if (!syllableCountB) {
+            syllableCountB = 1;
+        }
 
-            //checking A for compound word, take first half if true
-            if (wordActualA.word.search(' ') != -1) {
-                aPiece = wordActualA.word.substr(0, wordActualA.word.search(' '));
-            }
-            else if (wordActualA.word.search('-') != -1) {
-                aPiece = wordActualA.word.substr(0, wordActualA.word.search('-'));
-            }
+        //TODO Change logic so that there is a 6 syllable max (or probably 5 tbh)
+        //new syllable count is between 1 and (syllable total - 1)
+        syllableCountA = Math.floor(Math.random() * (syllableCountA - 1)) + 1;
+        syllableCountB = Math.floor(Math.random() * (syllableCountB - 1)) + 1;
 
-            //checking B for compound word, take second half if true
-            if (wordActualB.word.search(' ') != -1) {
-                bPiece = wordActualB.word.substr(wordActualB.word.search(' '), wordActualB.length - 1);
-            }
-            else if (wordActualB.word.search('-') != -1) {
-                bPiece = wordActualB.word.substr((wordActualB.word.search('-'), wordActualB.length - 1));
-            }
+        //checking if syllable API calls return bogus empty object
+        if (!wordObjectA.syllables.list) {
+            fakeWordA = wordObjectA.word;
+        }
+        else {
+            fakeWordA = wordObjectA.syllables.list.slice(0, syllableCountA).join("");
 
-            //final output created
-            if (aPiece && bPiece) { //concantenate if at least one compound word is present
-                const connector = Math.round(Math.random());
-                if (connector) {
-                    $word.text(aPiece + " " + bPiece)
-                }
-                else if (!connector) {
-                    $word.text(aPiece + "-" + bPiece)
+        }
 
-                }
-            }
-            else if (!aPiece && !bPiece) { //concatenate if both words are simple
+        if (!wordObjectB.syllables.list) {
+            fakeWordB = wordObjectA.word;
+        }
+        else {
+            fakeWordB = wordObjectB.syllables.list.slice(0, syllableCountB).join("");
 
-                //syllabel API Call
-                const settings = {
-                    "async": true,
-                    "crossDomain": true,
-                    "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActualA.word}/syllables`,
-                    "method": "GET",
-                    "headers": {
-                        "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-                        "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-                    }
-                };
+        }
 
-                $.ajax(settings).done(function (syllablesA) {
+        //fake word rendered
+        $word.text(fakeWordA + fakeWordB);
 
-                    //syllabel API Call
-                    const settings = {
-                        "async": true,
-                        "crossDomain": true,
-                        "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActualB.word}/syllables`,
-                        "method": "GET",
-                        "headers": {
-                            "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-                            "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-                        }
-                    };
+        //definition API call
+        callAPI(wordObjectA.word, 'definitions', 0);
 
-                    $.ajax(settings).done(function (syllablesB) {
+        //TODO: fallback to definition B, then a random, valid definition(50/50)
+        //check if API even *has* definition
+        if (wordObjectA.definitions.length === 0) {
+            $definition.text("");
+        }
+        else {
+            $definition.text(wordObjectA.definitions[0].definition);
+        }
+    }
+    else if (!aPiece) { //concatenate if just A is simple //TODO: DRY
+        const connector = Math.round(Math.random());
+        if (connector) {
+            $word.text(wordObjectA.word + " " + bPiece)
+        }
+        else if (!connector) {
+            $word.text(wordObjectA.word + "-" + bPiece)
 
-                        //choosing  syllables for fake word
-                        let syllableCountA = syllablesA.syllables.count;
-                        let syllableCountB = syllablesB.syllables.count;
+        }
+    }
+    else if (!bPiece) { //concatenate if just B is simple
+        const connector = Math.round(Math.random());
+        if (connector) {
+            $word.text(aPiece + " " + wordObjectB.word)
+        }
+        else if (!connector) {
+            $word.text(aPiece + "-" + wordObjectB.word)
 
-                        //checking if syllable API calls return bogus empty object :(
-                        if (!syllableCountA) {
-                            syllableCountA = 1;
-                        }
-                        if (!syllableCountB) {
-                            syllableCountB = 1;
-                        }
+        }
+    }
 
-                        //new syllable count is between 1 and (syllable total - 1)
-                        syllableCountA = Math.floor(Math.random() * (syllableCountA - 1)) + 1;
-                        syllableCountB = Math.floor(Math.random() * (syllableCountB - 1)) + 1;
+    //definition API call
+    callAPI(wordObjectA.word, 'definitions', 0);
 
-                        //checking if syllable API calls return bogus empty object :(
-                        if (!syllablesA.syllables.list) {
-                            fakeWordA = wordActualA.word;
-                        }
-                        else {
-                            fakeWordA = syllablesA.syllables.list.slice(0, syllableCountA).join("");
-
-                        }
-
-                        if (!syllablesB.syllables.list) {
-                            fakeWordB = wordActualB.word;
-                        }
-                        else {
-                            fakeWordB = syllablesB.syllables.list.slice(0, syllableCountB).join("");
-
-                        }
-
-                        $word.text(fakeWordA + fakeWordB);
-                        //DEBUG ONLY
-
-                        //definition API call
-                        const settingsA = {
-                            "async": true,
-                            "crossDomain": true,
-                            "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActualA.word}/definitions`,
-                            "method": "GET",
-                            "headers": {
-                                "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-                                "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-                            }
-                        };
-
-                        $.ajax(settingsA).then(function (wordDefinition) {
-
-                            //check if API even *has* definition
-                            if (wordDefinition.definitions.length === 0) {
-                                $definition.text("");
-                            }
-                            else {
-                                $definition.text(wordDefinition.definitions[0].definition);
-                            }
-                        }, (error) => {
-                            $definition.text("Definition not found :(");
-                        })
-                    });
-                });
-            }
-            else if (!aPiece) { //concatenate if just A is simple
-                const connector = Math.round(Math.random());
-                if (connector) {
-                    $word.text(wordActualA.word + " " + bPiece)
-                }
-                else if (!connector) {
-                    $word.text(wordActualA.word + "-" + bPiece)
-
-                }
-            }
-            else if (!bPiece) { //concatenate if just B is simple
-                const connector = Math.round(Math.random());
-                if (connector) {
-                    $word.text(aPiece + " " + wordActualB.word)
-                }
-                else if (!connector) {
-                    $word.text(aPiece + "-" + wordActualB.word)
-
-                }
-            }
-
-            //definition API call
-            const settingsA = {
-                "async": true,
-                "crossDomain": true,
-                "url": `https://wordsapiv1.p.rapidapi.com/words/${wordActualA.word}/definitions`,
-                "method": "GET",
-                "headers": {
-                    "X-RapidAPI-Key": "dc2e0e8bddmshc3267816db39455p18c965jsn6c05ba4f9f24",
-                    "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
-                }
-            };
-
-
-            $.ajax(settingsA).then(function (wordDefinition) {
-
-                //check if API even *has* definition
-                if (wordDefinition.definitions.length === 0) {
-                    $definition.text("");
-                }
-                else {
-                    $definition.text(wordDefinition.definitions[0].definition);
-                }
-
-
-            }, (error) => {
-                $definition.text("Definition not found :(");
-
-            })
-        });
-    });
+    //TODO: fallback to definition B, then a random, valid definition(50/50)
+    //check if API even *has* definition
+    if (wordObjectA.definitions.length === 0) {
+        $definition.text("");
+    }
+    else {
+        $definition.text(wordObjectA.definitions[0].definition);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
