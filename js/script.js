@@ -5,6 +5,7 @@ let questionNum = 5;
 let isReal;
 let wordObjectA;
 let wordObjectB;
+let foo = "foo";
 
 
 //DOM ELEMENTS
@@ -27,8 +28,8 @@ const $reset = $('#reset');
 function render() {
 
     //real or fake word chosen 50/50
-    isReal = Math.round(Math.random());
-
+    //isReal = Math.round(Math.random());
+    isReal = true;
     if (isReal) {
         findRealWord();
     }
@@ -41,10 +42,10 @@ function render() {
 //purpose: creates an AJAX call to Words API with the desired paramaters
 //attributes used: definitions, syllables, random
 //note: To retrieve a random word, set word and attribute to 0
-//input: word, attribute, and JSON object to be overwritten
+//input: word, attribute, and JSON object to be overwritten (provide 0 or 1 for A & B)
 //output: sets global JSON wordObject to the results of the call
 ////////////////////////////////////////////////////////////////////////////////////
-function callAPI(word, attribute, wordObject){
+function callAPI(word, attribute, wordObject) {
 
     //Syllable API Call
     const settings = {
@@ -59,14 +60,18 @@ function callAPI(word, attribute, wordObject){
     };
 
     //overwrite URL attribute if random word desired
-    if (!word){
+    if (!word) {
         settings.url = "https://wordsapiv1.p.rapidapi.com/words/?random=true"
     }
 
     $.ajax(settings).done(function (callResult) {
-        wordObject = callResult;
+        if (!wordObject) { //set to 0
+            wordObjectA = callResult;
+        }
+        else { //set to 1
+            wordObjectB = callResult;
+        }
     });
-
 }
 
 
@@ -78,6 +83,11 @@ function callAPI(word, attribute, wordObject){
 //output: none
 ////////////////////////////////////////////////////////////////////////////////////
 function findRealWord() {
+
+    //find random word and display
+    callAPI(0, 0, wordObjectA);
+    $word.text(wordObjectA.word);
+
 
     //random word API call
     const settings = {
@@ -447,3 +457,18 @@ function main() {
 }
 
 //main();
+console.log(wordObjectA);
+callAPI("definitions", "dog", 0);
+console.log(wordObjectA);
+callAPI("syllables", "dog", 0);
+console.log(wordObjectA);
+callAPI(0,0,0);
+console.log(wordObjectA);
+
+console.log(wordObjectB);
+callAPI("definitions", "dog", 1);
+console.log(wordObjectB);
+callAPI("syllables", "dog", 1);
+console.log(wordObjectB);
+callAPI(0,0,1);
+console.log(wordObjectB);
