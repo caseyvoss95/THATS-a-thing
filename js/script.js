@@ -105,46 +105,37 @@ function createFakeWord() {
     callAPI(0, 0, 0);
     callAPI(0, 0, 1);
 
+    //DEBUG ONLY
     console.log(wordObjectA);
     console.log(wordObjectB);
-
-
-    let aPiece;
-    let bPiece;
     
-    //TODO: DRY further
     //Compound word check and slice
-    if (compoundCheck(wordObjectA.word)){
-        aPiece = compoundSlice(wordObjectA.word, compoundChoose(compoundCheck(wordObjectA.word)), 0);
-    }
-
-
-    if (compoundCheck(wordObjectB.word)){
-        bPiece = compoundSlice(wordObjectB.word, compoundChoose(compoundCheck(wordObjectB.word)), 1);
-    }
+    const aPiece = compoundSlice(wordObjectA.word, compoundChoose(compoundCheck(wordObjectA.word)), 0);
+    const bPiece = compoundSlice(wordObjectB.word, compoundChoose(compoundCheck(wordObjectB.word)), 1);
 
     //final output created
-    if (aPiece && bPiece) { //concantenate if at least one compound word is present
+    if (compoundCheck(wordObjectA.word) && compoundCheck(wordObjectB.word)) { //concantenate if at least one compound word is present
         const connector = Math.round(Math.random());
         if (connector) {
             $word.text(aPiece + " " + bPiece)
         }
         else if (!connector) {
             $word.text(aPiece + "-" + bPiece)
-
         }
     }
-    else if (!aPiece && !bPiece) { //concatenate if both words are simple
+    else if (!compoundCheck(wordObjectA.word) && !compoundCheck(wordObjectB.word)) { //concatenate if both words are simple
 
         //syllabel API Call
         callAPI(wordObjectA.word, 'syllables', 0);
-        callAPI(wordObjectA.word, 'syllables', 1);
+        callAPI(wordObjectB.word, 'syllables', 1);
+
+        console.log(wordObjectA);
+        console.log(wordObjectB);
 
         //choosing  syllables for fake word
         let syllableCountA = wordObjectA.syllables.count;
         let syllableCountB = wordObjectB.syllables.count;
 
-        //DRY this (don't need extra vars above)
         //checking if syllable API calls return bogus empty object :(
         if (!syllableCountA) {
             syllableCountA = 1;
@@ -153,7 +144,14 @@ function createFakeWord() {
             syllableCountB = 1;
         }
 
-        //TODO Change logic so that there is a 6 syllable max (or probably 5 tbh)
+        //6 total syllable max
+        if (syllableCountA > 3){
+            syllableCountA = 2;
+        }
+        if (syllableCountB > 3){
+            syllableCountB = 2;
+        }
+
         //new syllable count is between 1 and (syllable total - 1)
         syllableCountA = Math.floor(Math.random() * (syllableCountA - 1)) + 1;
         syllableCountB = Math.floor(Math.random() * (syllableCountB - 1)) + 1;
@@ -166,14 +164,15 @@ function createFakeWord() {
             fakeWordA = wordObjectA.syllables.list.slice(0, syllableCountA).join("");
 
         }
-
         if (!wordObjectB.syllables.list) {
-            fakeWordB = wordObjectA.word;
+            fakeWordB = wordObjectB.word;
         }
         else {
-            fakeWordB = wordObjectB.syllables.list.slice(0, syllableCountB).join("");
-
+            fakeWordB = wordObjectB.syllables.list.slice(syllableCountB * -1).join("");
         }
+
+        console.log(fakeWordA);
+        console.log(fakeWordB);
 
         //fake word rendered
         $word.text(fakeWordA + fakeWordB);
@@ -190,7 +189,7 @@ function createFakeWord() {
             $definition.text(wordObjectA.definitions[0].definition);
         }
     }
-    else if (!aPiece) { //concatenate if just A is simple //TODO: DRY
+    else if (!compoundCheck(wordObjectA.word)) { //concatenate if just A is simple //TODO: DRY
         const connector = Math.round(Math.random());
         if (connector) {
             $word.text(wordObjectA.word + " " + bPiece)
@@ -200,14 +199,13 @@ function createFakeWord() {
 
         }
     }
-    else if (!bPiece) { //concatenate if just B is simple
+    else if (!compoundCheck(wordObjectB.word)) { //concatenate if just B is simple
         const connector = Math.round(Math.random());
         if (connector) {
             $word.text(aPiece + " " + wordObjectB.word)
         }
         else if (!connector) {
             $word.text(aPiece + "-" + wordObjectB.word)
-
         }
     }
 
@@ -247,14 +245,17 @@ function compoundCheck(word){
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: delegates how a compound word will be sliced
 //input: slice choice
-//output: returns symbol that divdes the word
+//output: returns symbol that divdes the word, or false if simple
 ////////////////////////////////////////////////////////////////////////////////////
 function compoundChoose(choice){
     if (choice === 1){
         return ' ';
     }
-    else {
+    else if (choice === 2) {
         return '-';
+    }
+    else {
+        return 0;
     }
 }
 
@@ -262,15 +263,18 @@ function compoundChoose(choice){
 //purpose: slice a compound word to the left or right
 //input: word, seperating symbol, and direction to slice: 0 = left, 1 = right
 //example: "compound-word" becomes "compound" w/ left and "word" w/ right
-//output: returns sliced half of compound word
+//output: returns sliced half of compound word, or original word if simple
 ////////////////////////////////////////////////////////////////////////////////////
 
 function compoundSlice(word, symbol, direction){
     
-    if (direction){
+    if (direction === 1){
         return word.substr(word.search(symbol) + 1, word.length - 1)}
-    else {
+    else if (direction === 2){
         return word.substr(0, word.search(symbol));;
+    }
+    else {
+        return word;
     }
 }
 
@@ -384,18 +388,3 @@ function main() {
 }
 
 main();
-
-console.log(compoundCheck("big-toast"));
-console.log(compoundCheck("mamaa"));
-console.log(compoundCheck("joe daddy"));
-
-console.log(compoundSlice("big-toast", '-', 0));
-console.log(compoundSlice("big-toast", '-', 1));
-
-console.log(compoundSlice("big toast", ' ', 0));
-console.log(compoundSlice("big toast", ' ', 1));
-
-
-console.log(compoundChoose(0));
-console.log(compoundChoose(1));
-console.log(compoundChoose(2));
