@@ -107,22 +107,21 @@ function createFakeWord() {
 
     let aPiece;
     let bPiece;
+    
+    //TODO: DRY further
+    //Compound word check and slice
+    if (compoundCheck(wordObjectA.word) === 1){
+        aPiece = compoundSlice(wordObjectA.word, ' ', 0);
+    }
+    else if (compoundCheck(wordObjectA.word) === 2){
+        aPiece = compoundSlice(wordObjectA.word, '-', 0);
+    }
 
-    //Slicing words TODO: DRY!
-    //checking A for compound word, take first half if true
-    if (wordObjectA.word.search(' ') != -1) {
-        aPiece = wordObjectA.word.substr(0, wordObjectA.word.search(' '));
+    if (compoundCheck(wordObjectB.word) === 1){
+        bPiece = compoundSlice(wordObjectB.word, ' ', 1);
     }
-    else if (wordObjectA.word.search('-') != -1) {
-        aPiece = wordObjectA.word.substr(0, wordObjectA.word.search('-'));
-    }
-
-    //checking B for compound word, take second half if true
-    if (wordObjectB.word.search(' ') != -1) {
-        bPiece = wordObjectB.word.substr(wordObjectB.word.search(' '), wordObjectB.length - 1);
-    }
-    else if (wordObjectB.word.search('-') != -1) {
-        bPiece = wordObjectB.word.substr((wordObjectB.word.search('-'), wordObjectB.length - 1));
+    else if (compoundCheck(wordObjectA.word) === 2){
+        bPiece = compoundSlice(wordObjectA.word, '-', 1);
     }
 
     //final output created
@@ -223,6 +222,42 @@ function createFakeWord() {
     }
     else {
         $definition.text(wordObjectA.definitions[0].definition);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//purpose: checks if a word is compound (contains " " or "-")
+//input: word and direction to slice 
+//example: "compound-word" becomes "compound" w/ left and "word" w/ right
+//output: returns 0 if not compound, 1 if ' ' compound, 2 if '-' compound
+////////////////////////////////////////////////////////////////////////////////////
+
+function compoundCheck(word){
+    //checking A for compound word, take first half if true
+    if (word.search(' ') != -1) {
+        return 1;
+    }
+    else if (word.search('-') != -1) {
+        return 2;
+    }
+    else {
+        return 0;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//purpose: slice a compound word to the left or right
+//input: word, seperating symbol, and direction to slice: 0 = left, 1 = right
+//example: "compound-word" becomes "compound" w/ left and "word" w/ right
+//output: returns sliced half of compound word
+////////////////////////////////////////////////////////////////////////////////////
+
+function compoundSlice(word, symbol, direction){
+    
+    if (direction){
+        return word.substr(word.search(symbol) + 1, word.length - 1)}
+    else {
+        return word.substr(0, word.search(symbol));;
     }
 }
 
@@ -336,3 +371,13 @@ function main() {
 }
 
 main();
+
+console.log(compoundCheck("big-toast"));
+console.log(compoundCheck("mamaa"));
+console.log(compoundCheck("joe daddy"));
+
+console.log(compoundSlice("big-toast", '-', 0));
+console.log(compoundSlice("big-toast", '-', 1));
+
+console.log(compoundSlice("big toast", ' ', 0));
+console.log(compoundSlice("big toast", ' ', 1));
