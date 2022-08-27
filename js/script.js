@@ -104,10 +104,6 @@ function createFakeWord() {
     //random word calls
     callAPI(0, 0, 0);
     callAPI(0, 0, 1);
-
-    //DEBUG ONLY
-    console.log(wordObjectA);
-    console.log(wordObjectB);
     
     //Compound word check and slice
     const aPiece = compoundSlice(wordObjectA.word, compoundChoose(compoundCheck(wordObjectA.word)), 0);
@@ -128,9 +124,6 @@ function createFakeWord() {
         //syllabel API Call
         callAPI(wordObjectA.word, 'syllables', 0);
         callAPI(wordObjectB.word, 'syllables', 1);
-
-        console.log(wordObjectA);
-        console.log(wordObjectB);
 
         //choosing  syllables for fake word
         let syllableCountA = wordObjectA.syllables.count;
@@ -171,19 +164,22 @@ function createFakeWord() {
             fakeWordB = wordObjectB.syllables.list.slice(syllableCountB * -1).join("");
         }
 
-        console.log(fakeWordA);
-        console.log(fakeWordB);
-
         //fake word rendered
         $word.text(fakeWordA + fakeWordB);
 
         //definition API call
         callAPI(wordObjectA.word, 'definitions', 0);
 
-        //TODO: fallback to definition B, then a random, valid definition(50/50)
-        //check if API even *has* definition
+        //check if API even has valid definition
         if (wordObjectA.definitions.length === 0) {
             $definition.text("");
+            callAPI(wordObjectB.word, 'definitions', 1);
+            if (wordObjectB.definitions.length === 0){
+                $definition.text("");
+            }
+            else {
+                $definition.text(wordObjectB.definitions[0].definition);
+            }
         }
         else {
             $definition.text(wordObjectA.definitions[0].definition);
