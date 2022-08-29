@@ -26,8 +26,8 @@ const $reset = $('#reset');
 function render() {
 
     //real or fake word chosen 50/50
-    //isReal = Math.round(Math.random());
-    isReal = false;
+    isReal = Math.round(Math.random());
+    //isReal = false;
     if (isReal) {
         findRealWord();
     }
