@@ -26,8 +26,8 @@ const $reset = $('#reset');
 function render() {
 
     //real or fake word chosen 50/50
-    isReal = Math.round(Math.random());
-    //isReal = false;
+    //isReal = Math.round(Math.random());
+    isReal = false;
     if (isReal) {
         findRealWord();
     }
@@ -105,7 +105,7 @@ function createFakeWord() {
     callAPI(0, 0, 0);
     callAPI(0, 0, 1);
     
-    //Compound word check and slice
+    //compound word check and slice
     const aPiece = compoundSlice(wordObjectA.word, compoundChoose(compoundCheck(wordObjectA.word)), 0);
     const bPiece = compoundSlice(wordObjectB.word, compoundChoose(compoundCheck(wordObjectB.word)), 1);
 
@@ -145,7 +145,7 @@ function createFakeWord() {
             syllableCountB = 2;
         }
 
-        //new syllable count is between 1 and (syllable total - 1)
+        //new syllable count is between 1 and 3
         syllableCountA = Math.floor(Math.random() * (syllableCountA - 1)) + 1;
         syllableCountB = Math.floor(Math.random() * (syllableCountB - 1)) + 1;
 
@@ -167,13 +167,23 @@ function createFakeWord() {
         //fake word rendered
         $word.text(fakeWordA + fakeWordB);
 
+    }
+    else if (!compoundCheck(wordObjectA.word)) { //concatenate if just A is simple
+        const connector = Math.round(Math.random());
+        $word.text(wordObjectA.word + simpleConcatenate(connector) + bPiece);
+    }
+    else if (!compoundCheck(wordObjectB.word)) { //concatenate if just B is simple
+        const connector = Math.round(Math.random());
+        $word.text(apiece+ simpleConcatenate(connector) + wordObjectB.word);
+    }
+
         //definition API call
         callAPI(wordObjectA.word, 'definitions', 0);
 
-        //check if API even has valid definition
+        //check if API has valid definition
         if (wordObjectA.definitions.length === 0) {
             $definition.text("");
-            callAPI(wordObjectB.word, 'definitions', 1);
+            callAPI(wordObjectB.word, 'definitions', 1); //fallback to definition of B
             if (wordObjectB.definitions.length === 0){
                 $definition.text("");
             }
@@ -184,38 +194,6 @@ function createFakeWord() {
         else {
             $definition.text(wordObjectA.definitions[0].definition);
         }
-    }
-    else if (!compoundCheck(wordObjectA.word)) { //concatenate if just A is simple //TODO: DRY
-        const connector = Math.round(Math.random());
-        if (connector) {
-            $word.text(wordObjectA.word + " " + bPiece)
-        }
-        else if (!connector) {
-            $word.text(wordObjectA.word + "-" + bPiece)
-
-        }
-    }
-    else if (!compoundCheck(wordObjectB.word)) { //concatenate if just B is simple
-        const connector = Math.round(Math.random());
-        if (connector) {
-            $word.text(aPiece + " " + wordObjectB.word)
-        }
-        else if (!connector) {
-            $word.text(aPiece + "-" + wordObjectB.word)
-        }
-    }
-
-    //definition API call
-    callAPI(wordObjectA.word, 'definitions', 0);
-
-    //TODO: fallback to definition B, then a random, valid definition(50/50)
-    //check if API even *has* definition
-    if (wordObjectA.definitions.length === 0) {
-        $definition.text("");
-    }
-    else {
-        $definition.text(wordObjectA.definitions[0].definition);
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -273,6 +251,22 @@ function compoundSlice(word, symbol, direction){
         return word;
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+//purpose: connect to simple words to create a compound word
+//input: desired connector 0 for '-' or 1 for ' '
+//output: compound word
+////////////////////////////////////////////////////////////////////////////////////
+function simpleConcatenate(connector){
+    if (connector) {
+        return ' ';
+    }
+    else if (!connector) {
+        return '-';
+
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: add points to score and updates score display
