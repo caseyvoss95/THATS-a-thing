@@ -84,13 +84,12 @@ function findRealWord() {
     $word.text(wordObjectA.word);
     callAPI(wordObjectA.word, 'definitions', 0);
 
-    //TODO: make seperate function!
     //check if API definition array is populated
-    if (wordObjectA.definitions.length === 0) {
-        $definition.text("");
+    if (checkDefinition(wordObjectA.definitions.length)){
+        $definition.text(wordObjectA.definitions[0].definition);
     }
     else {
-        $definition.text(wordObjectA.definitions[0].definition);
+        $definition.text("");
     }
 }
 
@@ -174,26 +173,40 @@ function createFakeWord() {
     }
     else if (!compoundCheck(wordObjectB.word)) { //concatenate if just B is simple
         const connector = Math.round(Math.random());
-        $word.text(apiece+ simpleConcatenate(connector) + wordObjectB.word);
+        $word.text(aPiece + simpleConcatenate(connector) + wordObjectB.word);
     }
 
         //definition API call
         callAPI(wordObjectA.word, 'definitions', 0);
 
         //check if API has valid definition
-        if (wordObjectA.definitions.length === 0) {
-            $definition.text("");
-            callAPI(wordObjectB.word, 'definitions', 1); //fallback to definition of B
-            if (wordObjectB.definitions.length === 0){
-                $definition.text("");
-            }
-            else {
-                $definition.text(wordObjectB.definitions[0].definition);
-            }
-        }
-        else {
+        if (checkDefinition(wordObjectA.definitions.length)) {
             $definition.text(wordObjectA.definitions[0].definition);
         }
+        else {
+            callAPI(wordObjectB.word, 'definitions', 1); //fallback to definition of B
+            if (checkDefinition(wordObjectB.definitions.length)){
+                $definition.text(wordObjectB.definitions[0].definition);
+            }
+            else {
+                $definition.text("");
+            }
+        }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+//purpose: checks if definition exists in the API database
+//input: length of definitions array
+//output: true if definition exists, false if definition does not exist
+////////////////////////////////////////////////////////////////////////////////////
+function checkDefinition(length){
+    if (length === 0){
+        return 0;
+    }
+    else {
+        return true;
+    }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -266,7 +279,6 @@ function simpleConcatenate(connector){
 
     }
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////////
 //purpose: add points to score and updates score display
