@@ -26,9 +26,8 @@ const $reset = $('#reset');
 function render() {
 
     //real or fake word chosen 50/50
-    //isReal = Math.round(Math.random());
-    console.log(isReal);
-    isReal = true;
+    isReal = Math.round(Math.random());
+    //isReal = true;
     if (isReal) {
         findRealWord();
     }
@@ -341,7 +340,6 @@ function makeChoice(isReal, choice){
         return;
     }
     if (isReal === choice){
-        console.log("correct operation chosen");
         scoreAdd(10);
         removeQuestion();
         if (!gameOver()) {
