@@ -6,6 +6,11 @@ let isReal;
 let wordObjectA;
 let wordObjectB;
 
+
+//AUDIO
+const correct = new Audio("./assets/correct.wav");
+const incorrect = new Audio("./assets/incorrect.wav");
+
 //DOM ELEMENTS
 
 const $word = $('#word');
@@ -15,6 +20,7 @@ const $no = $('#no');
 const $score = $('#score');
 const $questionsNum = $('#questionsNum');
 const $reset = $('#reset');
+const $correct = $('#correct');
 
 //FUNCTIONS
 
@@ -27,7 +33,7 @@ function render() {
 
     //real or fake word chosen 50/50
     isReal = Math.round(Math.random());
-    //isReal = true; FOR DEBUG ONLY
+    //isReal = true; //FOR DEBUG ONLY
     if (isReal) {
         findRealWord();
     }
@@ -335,6 +341,7 @@ function makeChoice(isReal, choice){
         return;
     }
     if (isReal == choice){
+        correct.play();
         scoreAdd(10);
         removeQuestion();
         if (!gameOver()) {
@@ -342,6 +349,7 @@ function makeChoice(isReal, choice){
         }
     }
     else {
+        incorrect.play();
         removeQuestion();
         if (!gameOver()) {
             render();

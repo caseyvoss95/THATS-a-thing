@@ -15,7 +15,7 @@ Technologies used
 Screenshot
 --
 
-![image](./screenshot.png)
+![image](./assets/screenshot.png)
 --
 Getting Started
 --
