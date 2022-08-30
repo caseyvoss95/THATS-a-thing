@@ -27,7 +27,8 @@ function render() {
 
     //real or fake word chosen 50/50
     isReal = Math.round(Math.random());
-    //isReal = true;
+    console.log(isReal);
+    //isReal = true; FOR DEBUG ONLY
     if (isReal) {
         findRealWord();
     }
@@ -87,9 +88,6 @@ function findRealWord() {
     //check if API definition array is populated
     if (checkDefinition(wordObjectA.definitions.length)){
         $definition.text(wordObjectA.definitions[0].definition);
-    }
-    else {
-        $definition.text("");
     }
 }
 
@@ -188,9 +186,6 @@ function createFakeWord() {
             if (checkDefinition(wordObjectB.definitions.length)){
                 $definition.text(wordObjectB.definitions[0].definition);
             }
-            else {
-                $definition.text("");
-            }
         }
 }
 
@@ -201,6 +196,7 @@ function createFakeWord() {
 ////////////////////////////////////////////////////////////////////////////////////
 function checkDefinition(length){
     if (length === 0){
+        $definition.text(""); //display empty definition
         return 0;
     }
     else {
@@ -336,10 +332,13 @@ function resetGame() {
 //output: none
 ////////////////////////////////////////////////////////////////////////////////////
 function makeChoice(isReal, choice){
+    console.log("choice is " + choice);
+    console.log("isReal is" + isReal);
     if (questionNum === 0) { //game over behavior
         return;
     }
-    if (isReal === choice){
+    if (isReal == choice){
+       console.log('correct');
         scoreAdd(10);
         removeQuestion();
         if (!gameOver()) {
@@ -347,6 +346,7 @@ function makeChoice(isReal, choice){
         }
     }
     else {
+        console.log('incorrect');
         removeQuestion();
         if (!gameOver()) {
             render();
@@ -365,6 +365,7 @@ function main() {
 
     //listen for user choices 
     $yes.on('click', function () {
+        console.log('yes clicked');
         makeChoice(isReal, true);
     })
 
