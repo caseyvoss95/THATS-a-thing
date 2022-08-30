@@ -26,8 +26,9 @@ const $reset = $('#reset');
 function render() {
 
     //real or fake word chosen 50/50
-    isReal = Math.round(Math.random());
-    //isReal = false;
+    //isReal = Math.round(Math.random());
+    console.log(isReal);
+    isReal = true;
     if (isReal) {
         findRealWord();
     }
@@ -330,6 +331,31 @@ function resetGame() {
     $questionsNum.text(questionNum);
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+//purpose: tracks user choice, awards points if correct
+//input: isReal boolean, choice boolean representing yes or no
+//output: none
+////////////////////////////////////////////////////////////////////////////////////
+function makeChoice(isReal, choice){
+    if (questionNum === 0) { //game over behavior
+        return;
+    }
+    if (isReal === choice){
+        console.log("correct operation chosen");
+        scoreAdd(10);
+        removeQuestion();
+        if (!gameOver()) {
+            render();
+        }
+    }
+    else {
+        removeQuestion();
+        if (!gameOver()) {
+            render();
+        }
+    }
+}
+
 function main() {
 
     //display counters
@@ -340,47 +366,12 @@ function main() {
     render();
 
     //listen for user choices 
-    //TODO: DRY it up
     $yes.on('click', function () {
-
-        if (questionNum === 0) { //game over behavior
-            return;
-        }
-
-        if (isReal) { //yes correct
-            scoreAdd(10);
-            removeQuestion();
-            if (!gameOver()) {
-                render();
-            }
-        }
-        else { //yes incorrect
-            removeQuestion();
-            if (!gameOver()) {
-                render();
-            }
-        }
+        makeChoice(isReal, true);
     })
 
     $no.on('click', function () {
-
-        if (questionNum === 0) { //game over behavior
-            return;
-        }
-
-        if (!isReal) { //no correct
-            scoreAdd(10);
-            removeQuestion();
-            if (!gameOver()) {
-                render();
-            }
-        }
-        else { //no incorrect
-            removeQuestion();
-            if (!gameOver()) {
-                render();
-            }
-        }
+        makeChoice(isReal, false);
     })
 
     $reset.on('click', function () {
