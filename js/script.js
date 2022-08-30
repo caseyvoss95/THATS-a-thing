@@ -27,7 +27,6 @@ function render() {
 
     //real or fake word chosen 50/50
     isReal = Math.round(Math.random());
-    console.log(isReal);
     //isReal = true; FOR DEBUG ONLY
     if (isReal) {
         findRealWord();
@@ -332,13 +331,10 @@ function resetGame() {
 //output: none
 ////////////////////////////////////////////////////////////////////////////////////
 function makeChoice(isReal, choice){
-    console.log("choice is " + choice);
-    console.log("isReal is" + isReal);
     if (questionNum === 0) { //game over behavior
         return;
     }
     if (isReal == choice){
-       console.log('correct');
         scoreAdd(10);
         removeQuestion();
         if (!gameOver()) {
@@ -346,7 +342,6 @@ function makeChoice(isReal, choice){
         }
     }
     else {
-        console.log('incorrect');
         removeQuestion();
         if (!gameOver()) {
             render();
@@ -365,7 +360,6 @@ function main() {
 
     //listen for user choices 
     $yes.on('click', function () {
-        console.log('yes clicked');
         makeChoice(isReal, true);
     })
 
